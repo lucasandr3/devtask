@@ -24,8 +24,8 @@ RUN apk add --no-cache \
     libzip-dev \
     sqlite-dev \
     postgresql-dev \
-    mysql-client \
-    imap-dev \
+    mariadb-client \
+    libc-client-dev \
     krb5-dev \
     openssl-dev \
     zip \
