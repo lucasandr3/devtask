@@ -25,12 +25,9 @@ RUN apk add --no-cache \
     sqlite-dev \
     postgresql-dev \
     mariadb-client \
-    libc-client-dev \
-    krb5-dev \
     openssl-dev \
     zip \
     unzip \
-  && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
   && docker-php-ext-install \
     pdo \
     pdo_sqlite \
@@ -46,7 +43,6 @@ RUN apk add --no-cache \
     zip \
     opcache \
     intl \
-    imap \
   && rm -rf /var/cache/apk/*
 
 # Redis (phpredis)
