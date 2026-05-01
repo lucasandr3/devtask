@@ -22,17 +22,11 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libxml2-dev \
     libzip-dev \
-    sqlite-dev \
     postgresql-dev \
-    mariadb-client \
     openssl-dev \
     zip \
     unzip \
   && docker-php-ext-install \
-    pdo \
-    pdo_sqlite \
-    sqlite3 \
-    pdo_mysql \
     pdo_pgsql \
     pgsql \
     mbstring \
