@@ -1,0 +1,1291 @@
+@import 'flatpickr/dist/flatpickr.min.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   DEVTASK THEME SYSTEM
+   10 Color Themes + Dark Mode Support
+   ============================================ */
+
+/* Base/Default Theme: Ocean Blue */
+:root {
+    /* Primary Colors - Ocean Blue */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
+
+    /* Accent Colors */
+    --color-accent-50: #f0fdf4;
+    --color-accent-100: #dcfce7;
+    --color-accent-200: #bbf7d0;
+    --color-accent-300: #86efac;
+    --color-accent-400: #4ade80;
+    --color-accent-500: #22c55e;
+    --color-accent-600: #16a34a;
+    --color-accent-700: #15803d;
+    --color-accent-800: #166534;
+    --color-accent-900: #14532d;
+    --color-accent-950: #052e16;
+
+    /* Surface Colors - Light Mode */
+    --color-surface-50: #f8fafc;
+    --color-surface-100: #f1f5f9;
+    --color-surface-200: #e2e8f0;
+    --color-surface-300: #cbd5e1;
+    --color-surface-400: #94a3b8;
+    --color-surface-500: #64748b;
+    --color-surface-600: #475569;
+    --color-surface-700: #334155;
+    --color-surface-800: #1e293b;
+    --color-surface-900: #0f172a;
+    --color-surface-950: #020617;
+}
+
+/* Theme 2: Indigo Night */
+[data-theme="indigo"] {
+    --color-primary-50: #eef2ff;
+    --color-primary-100: #e0e7ff;
+    --color-primary-200: #c7d2fe;
+    --color-primary-300: #a5b4fc;
+    --color-primary-400: #818cf8;
+    --color-primary-500: #6366f1;
+    --color-primary-600: #4f46e5;
+    --color-primary-700: #4338ca;
+    --color-primary-800: #3730a3;
+    --color-primary-900: #312e81;
+    --color-primary-950: #1e1b4b;
+}
+
+/* Theme 3: Emerald Fresh */
+[data-theme="emerald"] {
+    --color-primary-50: #ecfdf5;
+    --color-primary-100: #d1fae5;
+    --color-primary-200: #a7f3d0;
+    --color-primary-300: #6ee7b7;
+    --color-primary-400: #34d399;
+    --color-primary-500: #10b981;
+    --color-primary-600: #059669;
+    --color-primary-700: #047857;
+    --color-primary-800: #065f46;
+    --color-primary-900: #064e3b;
+    --color-primary-950: #022c22;
+}
+
+/* Theme 4: Rose Elegant */
+[data-theme="rose"] {
+    --color-primary-50: #fff1f2;
+    --color-primary-100: #ffe4e6;
+    --color-primary-200: #fecdd3;
+    --color-primary-300: #fda4af;
+    --color-primary-400: #fb7185;
+    --color-primary-500: #f43f5e;
+    --color-primary-600: #e11d48;
+    --color-primary-700: #be123c;
+    --color-primary-800: #9f1239;
+    --color-primary-900: #881337;
+    --color-primary-950: #4c0519;
+}
+
+/* Theme 5: Amber Warm */
+[data-theme="amber"] {
+    --color-primary-50: #fffbeb;
+    --color-primary-100: #fef3c7;
+    --color-primary-200: #fde68a;
+    --color-primary-300: #fcd34d;
+    --color-primary-400: #fbbf24;
+    --color-primary-500: #f59e0b;
+    --color-primary-600: #d97706;
+    --color-primary-700: #b45309;
+    --color-primary-800: #92400e;
+    --color-primary-900: #78350f;
+    --color-primary-950: #451a03;
+}
+
+/* Theme 6: Violet Dream */
+[data-theme="violet"] {
+    --color-primary-50: #f5f3ff;
+    --color-primary-100: #ede9fe;
+    --color-primary-200: #ddd6fe;
+    --color-primary-300: #c4b5fd;
+    --color-primary-400: #a78bfa;
+    --color-primary-500: #8b5cf6;
+    --color-primary-600: #7c3aed;
+    --color-primary-700: #6d28d9;
+    --color-primary-800: #5b21b6;
+    --color-primary-900: #4c1d95;
+    --color-primary-950: #2e1065;
+}
+
+/* Theme 7: Teal Ocean */
+[data-theme="teal"] {
+    --color-primary-50: #f0fdfa;
+    --color-primary-100: #ccfbf1;
+    --color-primary-200: #99f6e4;
+    --color-primary-300: #5eead4;
+    --color-primary-400: #2dd4bf;
+    --color-primary-500: #14b8a6;
+    --color-primary-600: #0d9488;
+    --color-primary-700: #0f766e;
+    --color-primary-800: #115e59;
+    --color-primary-900: #134e4a;
+    --color-primary-950: #042f2e;
+}
+
+/* Theme 8: Slate Pro */
+[data-theme="slate"] {
+    --color-primary-50: #f8fafc;
+    --color-primary-100: #f1f5f9;
+    --color-primary-200: #e2e8f0;
+    --color-primary-300: #cbd5e1;
+    --color-primary-400: #94a3b8;
+    --color-primary-500: #64748b;
+    --color-primary-600: #475569;
+    --color-primary-700: #334155;
+    --color-primary-800: #1e293b;
+    --color-primary-900: #0f172a;
+    --color-primary-950: #020617;
+}
+
+/* Theme 9: Cyan Tech */
+[data-theme="cyan"] {
+    --color-primary-50: #ecfeff;
+    --color-primary-100: #cffafe;
+    --color-primary-200: #a5f3fc;
+    --color-primary-300: #67e8f9;
+    --color-primary-400: #22d3ee;
+    --color-primary-500: #06b6d4;
+    --color-primary-600: #0891b2;
+    --color-primary-700: #0e7490;
+    --color-primary-800: #155e75;
+    --color-primary-900: #164e63;
+    --color-primary-950: #083344;
+}
+
+/* Theme 10: Fuchsia Bold */
+[data-theme="fuchsia"] {
+    --color-primary-50: #fdf4ff;
+    --color-primary-100: #fae8ff;
+    --color-primary-200: #f5d0fe;
+    --color-primary-300: #f0abfc;
+    --color-primary-400: #e879f9;
+    --color-primary-500: #d946ef;
+    --color-primary-600: #c026d3;
+    --color-primary-700: #a21caf;
+    --color-primary-800: #86198f;
+    --color-primary-900: #701a75;
+    --color-primary-950: #4a044e;
+}
+
+/* ============================================
+   DARK MODE - Neutral Dark Theme
+   ============================================ */
+
+.dark {
+    /* Surface Colors - Neutral Dark (Black/Gray) */
+    --color-surface-50: #0a0a0a;
+    --color-surface-100: #141414;  /* Main background */
+    --color-surface-200: #1f1f1f;
+    --color-surface-300: #282828;  /* Secondary background */
+    --color-surface-400: #3c3c3c;  /* Panels/surfaces */
+    --color-surface-500: #525252;
+    --color-surface-600: #737373;
+    --color-surface-700: #a3a3a3;
+    --color-surface-800: #d4d4d4;
+    --color-surface-900: #e5e5e5;
+    --color-surface-950: #fafafa;
+
+    --color-accent-50: #052e16;
+    --color-accent-100: #14532d;
+    --color-accent-200: #166534;
+    --color-accent-300: #15803d;
+    --color-accent-400: #16a34a;
+    --color-accent-500: #22c55e;
+    --color-accent-600: #4ade80;
+    --color-accent-700: #86efac;
+    --color-accent-800: #bbf7d0;
+    --color-accent-900: #dcfce7;
+    --color-accent-950: #f0fdf4;
+}
+
+/* Override Tailwind's slate colors in dark mode to neutral grays */
+.dark {
+    /* Main backgrounds */
+    --tw-bg-opacity: 1;
+}
+
+/* Dark mode background overrides */
+.dark .dark\:bg-slate-900 {
+    background-color: #141414 !important;
+}
+
+.dark .dark\:bg-slate-800 {
+    background-color: #1f1f1f !important;
+}
+
+.dark .dark\:bg-slate-700 {
+    background-color: #282828 !important;
+}
+
+.dark .dark\:bg-slate-600 {
+    background-color: #3c3c3c !important;
+}
+
+/* Dark mode with opacity backgrounds */
+.dark .dark\:bg-slate-900\/80 {
+    background-color: rgba(20, 20, 20, 0.8) !important;
+}
+
+.dark .dark\:bg-slate-800\/80 {
+    background-color: rgba(31, 31, 31, 0.8) !important;
+}
+
+.dark .dark\:bg-slate-700\/50 {
+    background-color: rgba(40, 40, 40, 0.5) !important;
+}
+
+.dark .dark\:bg-slate-700\/30 {
+    background-color: rgba(40, 40, 40, 0.3) !important;
+}
+
+/* Dark mode border overrides */
+.dark .dark\:border-slate-700 {
+    border-color: #3c3c3c !important;
+}
+
+.dark .dark\:border-slate-700\/50 {
+    border-color: rgba(60, 60, 60, 0.5) !important;
+}
+
+.dark .dark\:border-slate-600 {
+    border-color: #4a4a4a !important;
+}
+
+/* Dark mode hover backgrounds */
+.dark .dark\:hover\:bg-slate-800:hover {
+    background-color: #282828 !important;
+}
+
+.dark .dark\:hover\:bg-slate-700:hover {
+    background-color: #3c3c3c !important;
+}
+
+.dark .dark\:hover\:bg-slate-600:hover {
+    background-color: #4a4a4a !important;
+}
+
+/* Dark mode from/via/to gradients */
+.dark .dark\:from-slate-900 {
+    --tw-gradient-from: #141414 var(--tw-gradient-from-position) !important;
+    --tw-gradient-to: rgba(20, 20, 20, 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+.dark .dark\:via-slate-900 {
+    --tw-gradient-to: rgba(20, 20, 20, 0) var(--tw-gradient-to-position) !important;
+    --tw-gradient-stops: var(--tw-gradient-from), #141414 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+.dark .dark\:to-slate-800 {
+    --tw-gradient-to: #1f1f1f var(--tw-gradient-to-position) !important;
+}
+
+/* Main page background for dark mode */
+.dark .dark-bg-main {
+    background: #141414 !important;
+}
+
+/* Header background for dark mode */
+.dark .dark-header {
+    background-color: rgba(20, 20, 20, 0.8) !important;
+    border-color: rgba(60, 60, 60, 0.5) !important;
+}
+
+/* Sidebar background for dark mode */
+.dark .dark-sidebar {
+    background-color: #1a1a1a !important;
+    border-color: #3c3c3c !important;
+}
+
+/* Generic dark border */
+.dark .dark-border {
+    border-color: #3c3c3c !important;
+}
+
+/* Sidebar link active state for dark mode */
+.dark .sidebar-link-active {
+    background-color: #2a2a2a !important;
+    color: var(--color-primary-400) !important;
+}
+
+/* Sidebar link hover state for dark mode */
+.dark .sidebar-link-hover:hover {
+    background-color: #2a2a2a !important;
+}
+
+/* Dark mode surface colors */
+.dark .dark-surface {
+    background-color: #252525 !important;
+}
+
+.dark .dark-surface-alt {
+    background-color: #2a2a2a !important;
+}
+
+/* Dark mode divide colors */
+.dark .dark\:divide-slate-700 > :not([hidden]) ~ :not([hidden]) {
+    border-color: #3c3c3c !important;
+}
+
+/* Focus ring offset for dark mode */
+.dark .dark\:focus\:ring-offset-slate-900 {
+    --tw-ring-offset-color: #141414;
+}
+
+/* ============================================
+   CUSTOM COMPONENT STYLES
+   ============================================ */
+
+@layer components {
+    /* Card Styles */
+    .card {
+        @apply bg-white rounded-lg shadow-sm border border-gray-200;
+    }
+    .dark .card {
+        background-color: #1f1f1f;
+        border-color: #3c3c3c;
+    }
+
+    .card-hover {
+        @apply transition-all duration-200 hover:shadow-md hover:border-primary-200;
+    }
+    .dark .card-hover:hover {
+        border-color: var(--color-primary-700);
+    }
+
+    /* Button Base */
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 font-semibold text-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+    }
+    .dark .btn {
+        --tw-ring-offset-color: #141414;
+    }
+
+    .btn-primary {
+        @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500 active:bg-primary-800;
+    }
+
+    .btn-secondary {
+        @apply btn bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-primary-500;
+    }
+    .dark .btn-secondary {
+        background-color: #282828;
+        color: #e5e5e5;
+        border-color: #4a4a4a;
+    }
+    .dark .btn-secondary:hover {
+        background-color: #3c3c3c;
+    }
+
+    .btn-danger {
+        @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800;
+    }
+
+    /* Input Styles */
+    .input {
+        @apply w-full rounded-lg border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors duration-200;
+    }
+    .dark .input {
+        background-color: #282828;
+        border-color: #4a4a4a;
+        color: #ffffff;
+    }
+    .dark .input:focus {
+        border-color: var(--color-primary-400);
+        --tw-ring-color: var(--color-primary-400);
+    }
+
+    /* Table Styles */
+    .table-container {
+        @apply overflow-hidden rounded-lg border border-gray-200;
+    }
+    .dark .table-container {
+        border-color: #3c3c3c;
+    }
+
+    .table {
+        @apply min-w-full divide-y divide-gray-200;
+    }
+    .dark .table {
+        --tw-divide-opacity: 1;
+        border-color: #3c3c3c;
+    }
+    .dark .table > :not([hidden]) ~ :not([hidden]) {
+        border-color: #3c3c3c;
+    }
+
+    .table-header {
+        @apply bg-gray-50;
+    }
+    .dark .table-header {
+        background-color: #1f1f1f;
+    }
+
+    .table-header th {
+        @apply px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider;
+    }
+    .dark .table-header th {
+        color: #a3a3a3;
+    }
+
+    .table-body {
+        @apply bg-white divide-y divide-gray-200;
+    }
+    .dark .table-body {
+        background-color: #1f1f1f;
+    }
+    .dark .table-body > :not([hidden]) ~ :not([hidden]) {
+        border-color: #3c3c3c;
+    }
+
+    .table-row {
+        @apply transition-colors duration-150 hover:bg-gray-50;
+    }
+    .dark .table-row:hover {
+        background-color: #282828;
+    }
+
+    .table-cell {
+        @apply px-6 py-4 text-sm text-gray-900;
+    }
+    .dark .table-cell {
+        color: #f5f5f5;
+    }
+
+    /* Badge Styles */
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+
+    .badge-primary {
+        @apply badge bg-primary-100 text-primary-800;
+    }
+    .dark .badge-primary {
+        background-color: rgba(var(--color-primary-900), 0.3);
+        color: var(--color-primary-200);
+    }
+
+    .badge-success {
+        @apply badge bg-green-100 text-green-800;
+    }
+    .dark .badge-success {
+        background-color: rgba(22, 101, 52, 0.3);
+        color: #86efac;
+    }
+
+    .badge-warning {
+        @apply badge bg-yellow-100 text-yellow-800;
+    }
+    .dark .badge-warning {
+        background-color: rgba(133, 77, 14, 0.3);
+        color: #fde047;
+    }
+
+    .badge-danger {
+        @apply badge bg-red-100 text-red-800;
+    }
+    .dark .badge-danger {
+        background-color: rgba(153, 27, 27, 0.3);
+        color: #fca5a5;
+    }
+
+    .badge-info {
+        @apply badge bg-blue-100 text-blue-800;
+    }
+    .dark .badge-info {
+        background-color: rgba(30, 58, 138, 0.3);
+        color: #93c5fd;
+    }
+
+    /* Navigation */
+    .nav-link {
+        @apply inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+    }
+
+    .nav-link-active {
+        @apply nav-link bg-primary-50 text-primary-700;
+    }
+    .dark .nav-link-active {
+        background-color: #282828;
+        color: var(--color-primary-300);
+    }
+
+    .nav-link-inactive {
+        @apply nav-link text-gray-600 hover:bg-gray-100 hover:text-gray-900;
+    }
+    .dark .nav-link-inactive {
+        color: #a3a3a3;
+    }
+    .dark .nav-link-inactive:hover {
+        background-color: #282828;
+        color: #ffffff;
+    }
+
+    /* Stat Card */
+    .stat-card {
+        @apply card p-6 border-l-4 border-l-primary-500 card-hover;
+    }
+
+    .stat-card-icon {
+        @apply flex-shrink-0 p-3 rounded-lg bg-primary-50;
+    }
+    .dark .stat-card-icon {
+        background-color: #282828;
+    }
+
+    .stat-card-icon svg {
+        @apply h-6 w-6 text-primary-600;
+    }
+    .dark .stat-card-icon svg {
+        color: var(--color-primary-400);
+    }
+
+    /* Page Header */
+    .page-header {
+        @apply bg-white shadow-sm border-b border-gray-200;
+    }
+    .dark .page-header {
+        background-color: #1f1f1f;
+        border-color: #3c3c3c;
+    }
+
+    .page-title {
+        @apply text-2xl font-bold text-gray-900;
+    }
+    .dark .page-title {
+        color: #ffffff;
+    }
+
+    /* Alert Styles */
+    .alert {
+        @apply p-4 rounded-lg border;
+    }
+
+    .alert-success {
+        @apply alert bg-green-50 border-green-200 text-green-800;
+    }
+    .dark .alert-success {
+        background-color: rgba(22, 101, 52, 0.15);
+        border-color: rgba(22, 101, 52, 0.4);
+        color: #86efac;
+    }
+
+    .alert-error {
+        @apply alert bg-red-50 border-red-200 text-red-800;
+    }
+    .dark .alert-error {
+        background-color: rgba(153, 27, 27, 0.15);
+        border-color: rgba(153, 27, 27, 0.4);
+        color: #fca5a5;
+    }
+
+    .alert-warning {
+        @apply alert bg-yellow-50 border-yellow-200 text-yellow-800;
+    }
+    .dark .alert-warning {
+        background-color: rgba(133, 77, 14, 0.15);
+        border-color: rgba(133, 77, 14, 0.4);
+        color: #fde047;
+    }
+
+    .alert-info {
+        @apply alert bg-blue-50 border-blue-200 text-blue-800;
+    }
+    .dark .alert-info {
+        background-color: rgba(30, 58, 138, 0.15);
+        border-color: rgba(30, 58, 138, 0.4);
+        color: #93c5fd;
+    }
+}
+
+/* ============================================
+   TRANSITIONS & ANIMATIONS
+   ============================================ */
+
+@layer utilities {
+    .theme-transition {
+        @apply transition-colors duration-300 ease-in-out;
+    }
+}
+
+/* Smooth color transitions for theme switching */
+*, *::before, *::after {
+    transition-property: background-color, border-color;
+    transition-timing-function: ease-in-out;
+    transition-duration: 150ms;
+}
+
+/* Disable transitions on page load */
+.no-transitions * {
+    transition: none !important;
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR STYLES
+   ============================================ */
+
+/* Sidebar Scrollbar - Light Mode */
+aside nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+aside nav::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+aside nav::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.25);
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    transition: all 0.2s ease;
+}
+
+aside nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.45);
+    background-clip: padding-box;
+}
+
+aside nav::-webkit-scrollbar-thumb:active {
+    background: rgba(156, 163, 175, 0.6);
+    background-clip: padding-box;
+}
+
+/* Sidebar Scrollbar - Dark Mode */
+.dark aside nav::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.25);
+    background-clip: padding-box;
+}
+
+.dark aside nav::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 0.45);
+    background-clip: padding-box;
+}
+
+.dark aside nav::-webkit-scrollbar-thumb:active {
+    background: rgba(148, 163, 184, 0.6);
+    background-clip: padding-box;
+}
+
+/* Firefox Scrollbar */
+aside nav {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.25) transparent;
+}
+
+.dark aside nav {
+    scrollbar-color: rgba(148, 163, 184, 0.25) transparent;
+}
+
+/* Mobile Sidebar Scrollbar */
+aside[class*="mobile"] nav::-webkit-scrollbar,
+aside[class*="Mobile"] nav::-webkit-scrollbar {
+    width: 6px;
+}
+
+aside[class*="mobile"] nav::-webkit-scrollbar-track,
+aside[class*="Mobile"] nav::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px 0;
+}
+
+aside[class*="mobile"] nav::-webkit-scrollbar-thumb,
+aside[class*="Mobile"] nav::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.25);
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+}
+
+.dark aside[class*="mobile"] nav::-webkit-scrollbar-thumb,
+.dark aside[class*="Mobile"] nav::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.25);
+    background-clip: padding-box;
+}
+
+/* ============================================
+   DATA TABLE COMPONENT STYLES
+   ============================================ */
+
+@layer components {
+    /* Data Table Wrapper */
+    .data-table-wrapper {
+        @apply space-y-4;
+    }
+
+    /* Controls Bar */
+    .data-table-controls {
+        @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4;
+    }
+
+    /* Search Bar */
+    .data-table-search {
+        @apply relative flex items-center w-full sm:w-auto;
+    }
+
+    .data-table-search svg {
+        @apply absolute left-3 text-gray-400 dark:text-gray-500;
+    }
+
+    .data-table-search-input {
+        @apply pl-10 pr-4 py-2.5 w-full sm:w-80 rounded-lg border-0 text-sm;
+        @apply bg-gray-100 text-gray-900 placeholder-gray-500;
+        @apply focus:ring-2 focus:ring-primary-500 focus:bg-white;
+        @apply transition-all duration-200;
+    }
+
+    .dark .data-table-search-input {
+        background-color: #282828;
+        color: #ffffff;
+    }
+
+    .dark .data-table-search-input::placeholder {
+        color: #6b7280;
+    }
+
+    .dark .data-table-search-input:focus {
+        background-color: #1f1f1f;
+    }
+
+    /* Actions Container */
+    .data-table-actions {
+        @apply flex flex-wrap items-center gap-3;
+    }
+
+    /* Filter Buttons */
+    .data-table-filters {
+        @apply flex items-center gap-2;
+    }
+
+    .filter-btn {
+        @apply px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200;
+        @apply bg-transparent text-gray-600 hover:bg-gray-100;
+        @apply border border-transparent;
+    }
+
+    .dark .filter-btn {
+        color: #a3a3a3;
+    }
+
+    .dark .filter-btn:hover {
+        background-color: #282828;
+        color: #ffffff;
+    }
+
+    .filter-btn.active {
+        @apply bg-primary-600 text-white hover:bg-primary-700;
+    }
+
+    .dark .filter-btn.active {
+        @apply bg-primary-600 text-white;
+    }
+
+    /* Table Card */
+    .data-table-card {
+        @apply overflow-hidden;
+    }
+
+    .data-table-scroll {
+        @apply overflow-x-auto;
+    }
+
+    /* Main Table */
+    .data-table {
+        @apply w-full;
+    }
+
+    /* Table Header */
+    .data-table-header {
+        @apply bg-gray-50 border-b border-gray-200;
+    }
+
+    .dark .data-table-header {
+        background-color: #1a1a1a;
+        border-color: #3c3c3c;
+    }
+
+    .data-table-th {
+        @apply px-6 py-4 text-xs font-semibold uppercase tracking-wider;
+        @apply text-gray-600;
+    }
+
+    .dark .data-table-th {
+        color: #a3a3a3;
+    }
+
+    .data-table-th-checkbox {
+        @apply w-12;
+    }
+
+    /* Table Body */
+    .data-table-body {
+        @apply divide-y divide-gray-200;
+    }
+
+    .dark .data-table-body {
+        --tw-divide-opacity: 1;
+    }
+
+    .dark .data-table-body > :not([hidden]) ~ :not([hidden]) {
+        border-color: #2a2a2a;
+    }
+
+    /* Table Row */
+    .data-table-row {
+        @apply transition-colors duration-150;
+    }
+
+    .data-table-row:hover {
+        @apply bg-gray-50;
+    }
+
+    .dark .data-table-row:hover {
+        background-color: #252525;
+    }
+
+    /* Table Cell */
+    .data-table-td {
+        @apply px-6 py-4 text-sm text-gray-900 whitespace-nowrap;
+    }
+
+    .dark .data-table-td {
+        color: #f5f5f5;
+    }
+
+    .data-table-td-checkbox {
+        @apply w-12;
+    }
+
+    /* Checkbox */
+    .data-table-checkbox {
+        @apply w-4 h-4 rounded border-gray-300 text-primary-600;
+        @apply focus:ring-primary-500 focus:ring-offset-0;
+    }
+
+    .dark .data-table-checkbox {
+        background-color: #282828;
+        border-color: #4a4a4a;
+    }
+
+    /* Title Cell */
+    .data-table-title-cell {
+        @apply flex flex-col;
+    }
+
+    .data-table-title-main {
+        @apply font-medium text-gray-900;
+    }
+
+    .dark .data-table-title-main {
+        color: #ffffff;
+    }
+
+    .data-table-title-sub {
+        @apply text-sm text-gray-500 truncate max-w-xs;
+    }
+
+    .dark .data-table-title-sub {
+        color: #6b7280;
+    }
+
+    /* Actions Cell */
+    .data-table-actions-cell {
+        @apply flex items-center justify-end gap-2;
+    }
+
+    .action-btn {
+        @apply inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg;
+        @apply transition-all duration-200;
+    }
+
+    .action-btn.edit,
+    .action-btn.view {
+        @apply text-gray-600 bg-gray-100 hover:bg-gray-200;
+    }
+
+    .dark .action-btn.edit,
+    .dark .action-btn.view {
+        color: #e5e5e5;
+        background-color: #282828;
+    }
+
+    .dark .action-btn.edit:hover,
+    .dark .action-btn.view:hover {
+        background-color: #3c3c3c;
+    }
+
+    .action-btn.delete {
+        @apply text-red-600 bg-red-50 hover:bg-red-100;
+    }
+
+    .dark .action-btn.delete {
+        color: #fca5a5;
+        background-color: rgba(153, 27, 27, 0.2);
+    }
+
+    .dark .action-btn.delete:hover {
+        background-color: rgba(153, 27, 27, 0.3);
+    }
+
+    .action-btn.pdf {
+        @apply text-green-600 bg-green-50 hover:bg-green-100;
+    }
+
+    .dark .action-btn.pdf {
+        color: #86efac;
+        background-color: rgba(22, 101, 52, 0.2);
+    }
+
+    .dark .action-btn.pdf:hover {
+        background-color: rgba(22, 101, 52, 0.3);
+    }
+
+    .action-btn.send {
+        @apply text-amber-600 bg-amber-50 hover:bg-amber-100;
+    }
+
+    .dark .action-btn.send {
+        color: #fcd34d;
+        background-color: rgba(146, 64, 14, 0.2);
+    }
+
+    .dark .action-btn.send:hover {
+        background-color: rgba(146, 64, 14, 0.3);
+    }
+
+    /* Empty State */
+    .data-table-empty {
+        @apply px-6 py-12 text-center;
+    }
+
+    .data-table-empty-content {
+        @apply flex flex-col items-center;
+    }
+
+    .data-table-empty-icon {
+        @apply w-12 h-12 text-gray-300 mb-4;
+    }
+
+    .dark .data-table-empty-icon {
+        color: #525252;
+    }
+
+    .data-table-empty-message {
+        @apply text-gray-500 mb-4;
+    }
+
+    .dark .data-table-empty-message {
+        color: #a3a3a3;
+    }
+
+    /* Pagination */
+    .data-table-pagination {
+        @apply px-6 py-4 border-t border-gray-200;
+    }
+
+    .dark .data-table-pagination {
+        border-color: #3c3c3c;
+    }
+
+    /* Value Highlight */
+    .data-table-value {
+        @apply font-semibold text-primary-600;
+    }
+
+    .dark .data-table-value {
+        color: var(--color-primary-400);
+    }
+
+    /* Status Colors for filter buttons */
+    .status-fazer {
+        @apply bg-blue-100 text-blue-700;
+    }
+
+    .dark .status-fazer {
+        background-color: rgba(30, 58, 138, 0.3);
+        color: #93c5fd;
+    }
+
+    .status-progresso {
+        @apply bg-yellow-100 text-yellow-700;
+    }
+
+    .dark .status-progresso {
+        background-color: rgba(133, 77, 14, 0.3);
+        color: #fde047;
+    }
+
+    .status-completo {
+        @apply bg-green-100 text-green-700;
+    }
+
+    .dark .status-completo {
+        background-color: rgba(22, 101, 52, 0.3);
+        color: #86efac;
+    }
+
+    .status-warning {
+        @apply bg-orange-100 text-orange-700 font-semibold;
+    }
+
+    .dark .status-warning {
+        background-color: rgba(154, 52, 18, 0.3);
+        color: #fdba74;
+    }
+
+    /* ============================================
+       RESPONSIVE ACTION BUTTONS
+       Mostra apenas ícones em mobile
+       ============================================ */
+
+    /* Texto do botão - escondido em mobile */
+    .btn-text {
+        @apply hidden sm:inline;
+    }
+
+    /* Botão responsivo - padding menor em mobile quando só tem ícone */
+    .btn-responsive {
+        @apply px-2.5 sm:px-4;
+    }
+
+    /* Action button responsivo para tabelas */
+    .action-btn .btn-text {
+        @apply hidden sm:inline;
+    }
+
+    .action-btn {
+        @apply px-2 sm:px-3;
+    }
+}
+
+/* ============================================
+   FLATPICKR CUSTOM STYLES
+   ============================================ */
+
+/* Light Mode */
+.flatpickr-calendar {
+    @apply shadow-lg border border-gray-200 rounded-lg;
+    background: #fff;
+}
+
+.flatpickr-months {
+    @apply rounded-t-lg;
+}
+
+.flatpickr-months .flatpickr-month {
+    background: transparent;
+    @apply text-gray-900;
+}
+
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+    @apply bg-white text-gray-900;
+}
+
+.flatpickr-current-month input.cur-year {
+    @apply text-gray-900;
+}
+
+.flatpickr-weekdays {
+    background: transparent;
+}
+
+.flatpickr-weekday {
+    @apply text-gray-600 font-medium;
+    background: transparent;
+}
+
+.flatpickr-day {
+    @apply text-gray-700 rounded-lg;
+}
+
+.flatpickr-day:hover {
+    @apply bg-gray-100;
+    border-color: transparent;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: var(--color-primary-600) !important;
+    border-color: var(--color-primary-600) !important;
+    @apply text-white;
+}
+
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+    background: var(--color-primary-700) !important;
+    border-color: var(--color-primary-700) !important;
+}
+
+.flatpickr-day.today {
+    border-color: var(--color-primary-400);
+}
+
+.flatpickr-day.today:hover {
+    background: var(--color-primary-50);
+    border-color: var(--color-primary-400);
+}
+
+.flatpickr-day.inRange {
+    background: var(--color-primary-100);
+    border-color: var(--color-primary-100);
+    @apply text-primary-900;
+    box-shadow: -5px 0 0 var(--color-primary-100), 5px 0 0 var(--color-primary-100);
+}
+
+.flatpickr-months .flatpickr-prev-month,
+.flatpickr-months .flatpickr-next-month {
+    @apply text-gray-600;
+}
+
+.flatpickr-months .flatpickr-prev-month:hover svg,
+.flatpickr-months .flatpickr-next-month:hover svg {
+    fill: var(--color-primary-600);
+}
+
+/* Dark Mode */
+.dark .flatpickr-calendar {
+    background: #1f1f1f;
+    border-color: #3c3c3c;
+}
+
+.dark .flatpickr-months .flatpickr-month {
+    @apply text-gray-100;
+}
+
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months {
+    background: #282828;
+    @apply text-gray-100;
+}
+
+.dark .flatpickr-current-month .flatpickr-monthDropdown-months option {
+    background: #282828;
+}
+
+.dark .flatpickr-current-month input.cur-year {
+    @apply text-gray-100;
+}
+
+.dark .flatpickr-weekday {
+    @apply text-gray-400;
+}
+
+.dark .flatpickr-day {
+    @apply text-gray-200;
+}
+
+.dark .flatpickr-day:hover {
+    background: #3c3c3c;
+    border-color: transparent;
+}
+
+.dark .flatpickr-day.today {
+    border-color: var(--color-primary-400);
+}
+
+.dark .flatpickr-day.today:hover {
+    background: rgba(var(--color-primary-600), 0.2);
+}
+
+.dark .flatpickr-day.inRange {
+    background: rgba(var(--color-primary-600), 0.2);
+    border-color: rgba(var(--color-primary-600), 0.2);
+    @apply text-primary-200;
+    box-shadow: -5px 0 0 rgba(var(--color-primary-600), 0.2), 5px 0 0 rgba(var(--color-primary-600), 0.2);
+}
+
+.dark .flatpickr-day.prevMonthDay,
+.dark .flatpickr-day.nextMonthDay {
+    @apply text-gray-500;
+}
+
+.dark .flatpickr-day.disabled {
+    @apply text-gray-600;
+}
+
+.dark .flatpickr-months .flatpickr-prev-month,
+.dark .flatpickr-months .flatpickr-next-month {
+    @apply text-gray-400;
+}
+
+.dark .flatpickr-months .flatpickr-prev-month svg,
+.dark .flatpickr-months .flatpickr-next-month svg {
+    fill: #a3a3a3;
+}
+
+.dark .flatpickr-months .flatpickr-prev-month:hover svg,
+.dark .flatpickr-months .flatpickr-next-month:hover svg {
+    fill: var(--color-primary-400);
+}
+
+/* Input alternativo do Flatpickr */
+.flatpickr-input.flatpickr-mobile,
+input.flatpickr-input {
+    @apply bg-transparent;
+}
+
+.dark input.flatpickr-input[readonly] {
+    background-color: #282828 !important;
+}
+
+/* ============================================
+   KANBAN BOARD STYLES
+   ============================================ */
+
+@layer components {
+    .kanban-board {
+        @apply w-full;
+    }
+
+    .kanban-column {
+        @apply flex flex-col;
+    }
+
+    .kanban-column-body {
+        @apply flex-1 transition-all duration-200;
+    }
+
+    .kanban-card {
+        @apply select-none;
+    }
+
+    .kanban-card.dragging {
+        @apply opacity-50 rotate-2;
+    }
+
+    /* Line clamp utilities */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+}
