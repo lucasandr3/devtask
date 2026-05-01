@@ -9,7 +9,7 @@ COPY vite.config.js postcss.config.js tailwind.config.js ./
 RUN npm run build
 
 ## Production image (Nginx + PHP-FPM)
-FROM php:8.2-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # System deps + PHP extensions
 RUN apk add --no-cache \
