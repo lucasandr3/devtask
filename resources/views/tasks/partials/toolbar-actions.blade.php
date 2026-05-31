@@ -1,7 +1,7 @@
 <div class="flex flex-wrap items-center gap-2">
     <div class="toggle-group">
         <x-ui.toggle-item
-            :href="route('tarefas.index', array_filter(['view' => 'table', 'project_id' => request('project_id')]))"
+            :href="route('tarefas.index', array_filter(['view' => 'table', 'project_id' => request('project_id'), 'status' => request('status')]))"
             :active="$view === 'table'"
             label="Visualização em tabela"
             onclick="saveViewPreference('table')"
@@ -10,7 +10,7 @@
             <span class="hidden sm:inline">Tabela</span>
         </x-ui.toggle-item>
         <x-ui.toggle-item
-            :href="route('tarefas.index', array_filter(['view' => 'kanban', 'project_id' => request('project_id')]))"
+            :href="route('tarefas.index', array_filter(['view' => 'kanban', 'project_id' => request('project_id'), 'status' => request('status')]))"
             :active="$view === 'kanban'"
             label="Visualização kanban"
             onclick="saveViewPreference('kanban')"

@@ -25,4 +25,24 @@ class Company extends Model
     {
         return $this->hasMany(Project::class);
     }
+
+    public function clients(): HasMany
+    {
+        return $this->hasMany(Client::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function dasPayments(): HasMany
+    {
+        return $this->hasMany(DasPayment::class);
+    }
+
+    public function financialTransactions(): HasMany
+    {
+        return $this->hasMany(FinancialTransaction::class);
+    }
 }

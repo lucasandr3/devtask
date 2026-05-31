@@ -6,6 +6,47 @@
 @tailwind utilities;
 
 @layer components {
+    .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined', sans-serif;
+        font-weight: normal;
+        font-style: normal;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        direction: ltr;
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        user-select: none;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .material-symbols-outlined.size-3 {
+        font-size: 0.75rem;
+    }
+
+    .material-symbols-outlined.size-4 {
+        font-size: 1.125rem;
+    }
+
+    .material-symbols-outlined.size-5 {
+        font-size: 1.25rem;
+    }
+
+    .material-symbols-outlined.size-6 {
+        font-size: 1.5rem;
+    }
+
+    .material-symbols-outlined.size-8 {
+        font-size: 2rem;
+    }
+
+    .material-symbols-outlined.size-12 {
+        font-size: 3rem;
+    }
+
     .card {
         @apply rounded-lg border border-border bg-card text-card-foreground shadow-sm;
     }
@@ -185,7 +226,11 @@
     }
 
     .search-input-icon {
-        @apply absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none;
+        @apply absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none leading-none;
+    }
+
+    .search-input-icon.material-symbols-outlined {
+        font-size: 1.125rem;
     }
 
     .search-input {
@@ -201,7 +246,11 @@
     }
 
     .select-input-icon {
-        @apply absolute right-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none;
+        @apply absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none leading-none;
+    }
+
+    .select-input-icon.material-symbols-outlined {
+        font-size: 1.125rem;
     }
 
     .filter-tabs {
@@ -354,8 +403,10 @@
         @apply inline-flex items-center justify-center h-9 w-9 shrink-0 rounded-md p-0 transition-colors;
     }
 
-    .action-btn svg {
-        @apply size-5 shrink-0;
+    .action-btn svg,
+    .action-btn .material-symbols-outlined {
+        @apply shrink-0;
+        font-size: 1.25rem;
     }
 
     .action-btn.edit,

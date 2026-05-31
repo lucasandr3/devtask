@@ -4,12 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SettingsController extends Controller
 {
     public function index()
     {
         return view('settings.index');
+    }
+
+    public function updateTheme(Request $request)
+    {
+        $validated = $request->validate([
+            'theme_color' => ['required', 'string', Rule::in(config('theme.colors'))],
+        ]);
+
+        Auth::user()->update([
+            'theme_color' => $validated['theme_color'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'theme_color' => $validated['theme_color'],
+        ]);
     }
 
     public function updateEmail(Request $request)

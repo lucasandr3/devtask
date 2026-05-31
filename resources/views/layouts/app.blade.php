@@ -12,25 +12,9 @@
         <link rel="apple-touch-icon" href="{{ asset('web-app-manifest-192x192.png') }}">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=roboto:400,500,600,700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=roboto:400,500,600,700|material-symbols-outlined:400&display=swap" rel="stylesheet" />
 
-        <script>
-            (function() {
-                const darkMode = localStorage.getItem('gestorpro-dark-mode');
-                const theme = localStorage.getItem('gestorpro-theme');
-                const sidebarCollapsed = localStorage.getItem('sidebar-collapsed');
-                
-                if (darkMode === 'true' || (darkMode === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                }
-                
-                if (theme && theme !== 'blue') {
-                    document.documentElement.setAttribute('data-theme', theme);
-                }
-                
-                document.documentElement.setAttribute('data-sidebar-collapsed', sidebarCollapsed === 'true' ? 'true' : 'false');
-            })();
-        </script>
+        <x-theme-init :sidebar="true" />
         
         <style>
             @media (min-width: 1024px) {

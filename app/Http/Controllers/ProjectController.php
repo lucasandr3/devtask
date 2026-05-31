@@ -50,7 +50,9 @@ class ProjectController extends Controller
     {
         abort_unless(CurrentCompany::canManageProjects(), 403);
 
-        return view('projects.create');
+        $clients = \App\Models\Client::where('company_id', CurrentCompany::id())->orderBy('name')->get();
+
+        return view('projects.create', compact('clients'));
     }
 
     public function store(StoreProjectRequest $request)
@@ -60,11 +62,14 @@ class ProjectController extends Controller
         Project::create([
             'company_id' => CurrentCompany::id(),
             'created_by' => auth()->id(),
+            'client_id' => $request->client_id,
             'name' => $request->name,
             'description' => $request->description,
             'status' => $request->status,
             'starts_at' => $request->starts_at ? Carbon::parse($request->starts_at) : null,
             'ends_at' => $request->ends_at ? Carbon::parse($request->ends_at) : null,
+            'budget' => $request->budget,
+            'hourly_rate' => $request->hourly_rate,
         ]);
 
         return redirect()->route('projetos.index')
@@ -75,7 +80,9 @@ class ProjectController extends Controller
     {
         abort_unless(CurrentCompany::canManageProjects(), 403);
 
-        return view('projects.edit', compact('project'));
+        $clients = \App\Models\Client::where('company_id', CurrentCompany::id())->orderBy('name')->get();
+
+        return view('projects.edit', compact('project', 'clients'));
     }
 
     public function update(UpdateProjectRequest $request, Project $project)
@@ -83,11 +90,14 @@ class ProjectController extends Controller
         abort_unless(CurrentCompany::canManageProjects(), 403);
 
         $project->update([
+            'client_id' => $request->client_id,
             'name' => $request->name,
             'description' => $request->description,
             'status' => $request->status,
             'starts_at' => $request->starts_at ? Carbon::parse($request->starts_at) : null,
             'ends_at' => $request->ends_at ? Carbon::parse($request->ends_at) : null,
+            'budget' => $request->budget,
+            'hourly_rate' => $request->hourly_rate,
         ]);
 
         return redirect()->route('projetos.show', $project)

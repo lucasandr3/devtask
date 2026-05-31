@@ -1,8 +1,14 @@
 <?php
 
+use App\Http\Controllers\AnnualDeclarationController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CompanyFinancialController;
 use App\Http\Controllers\DailyPointController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DasPaymentController;
 use App\Http\Controllers\EmailAccountController;
+use App\Http\Controllers\FinancialTransactionController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MonthlyReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -72,6 +78,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Relatório de horas da empresa (admin/líder)
     Route::get('/relatorios/horas-empresa', [ProjectHoursReportController::class, 'index'])->name('relatorios.horas-empresa');
 
+    // Gestão financeira da empresa
+    Route::get('/financeiro', [CompanyFinancialController::class, 'index'])->name('financeiro.index');
+    Route::resource('clientes', ClientController::class)->except(['show']);
+    Route::resource('financeiro/lancamentos', FinancialTransactionController::class)
+        ->parameters(['lancamentos' => 'lancamento'])
+        ->names('financeiro.lancamentos')
+        ->except(['show']);
+    Route::post('/notas-fiscais/importar-xml', [InvoiceController::class, 'importXml'])->name('notas-fiscais.importar-xml');
+    Route::resource('notas-fiscais', InvoiceController::class)
+        ->parameters(['notas-fiscais' => 'invoice'])
+        ->except(['show']);
+    Route::get('/notas-fiscais/{invoice}/download', [InvoiceController::class, 'download'])->name('notas-fiscais.download');
+    Route::get('/notas-fiscais/{invoice}/visualizar', [InvoiceController::class, 'view'])->name('notas-fiscais.visualizar');
+    Route::get('/notas-fiscais/{invoice}', [InvoiceController::class, 'show'])->name('notas-fiscais.show');
+    Route::resource('das', DasPaymentController::class)
+        ->parameters(['das' => 'dasPayment'])
+        ->except(['show']);
+    Route::get('/declaracao-anual', [AnnualDeclarationController::class, 'index'])->name('declaracao-anual.index');
+    Route::post('/declaracao-anual/gerar', [AnnualDeclarationController::class, 'generate'])->name('declaracao-anual.gerar');
+    Route::get('/declaracao-anual/{annualDeclaration}', [AnnualDeclarationController::class, 'show'])->name('declaracao-anual.show');
+    Route::get('/declaracao-anual/{annualDeclaration}/pdf', [AnnualDeclarationController::class, 'pdf'])->name('declaracao-anual.pdf');
+
     // Equipe (admin)
     Route::get('/equipe', [TeamController::class, 'index'])->name('equipe.index');
     Route::get('/equipe/criar', [TeamController::class, 'create'])->name('equipe.create');
@@ -85,6 +113,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('perfil.excluir');
 
     Route::get('/configuracoes', [SettingsController::class, 'index'])->name('configuracoes.index');
+    Route::patch('/configuracoes/tema', [SettingsController::class, 'updateTheme'])->name('configuracoes.tema');
     Route::get('/configuracoes/emails', [EmailAccountController::class, 'index'])->name('configuracoes.emails.index');
     Route::post('/configuracoes/emails', [EmailAccountController::class, 'store'])->name('configuracoes.emails.store');
     Route::get('/configuracoes/emails/{emailAccount}/editar', [EmailAccountController::class, 'edit'])->name('configuracoes.emails.edit');

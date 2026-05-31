@@ -2,13 +2,21 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\PreparesBrazilianNumericInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateInvoiceRequest extends FormRequest
 {
+    use PreparesBrazilianNumericInput;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->prepareBrazilianMoneyFields(['valor', 'iss_value', 'tax_amount']);
     }
 
     public function rules(): array
@@ -24,6 +32,9 @@ class UpdateInvoiceRequest extends FormRequest
             'iss_value' => ['nullable', 'numeric', 'min:0'],
             'tax_amount' => ['nullable', 'numeric', 'min:0'],
             'invoice_type' => ['nullable', 'string', 'in:service,product'],
+            'payment_status' => ['nullable', 'string', 'in:pending,received,overdue'],
+            'client_id' => ['nullable', 'exists:clients,id'],
+            'project_id' => ['nullable', 'exists:projects,id'],
         ];
     }
 

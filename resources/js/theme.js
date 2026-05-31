@@ -18,69 +18,112 @@ const ThemeManager = {
     ],
 
     init() {
-        // Disable transitions on page load to prevent flash
         document.documentElement.classList.add('no-transitions');
-        
+
         this.loadTheme();
         this.loadDarkMode();
-        
-        // Re-enable transitions after a short delay
+
         setTimeout(() => {
             document.documentElement.classList.remove('no-transitions');
         }, 100);
 
-        // Listen for system dark mode changes
         this.watchSystemDarkMode();
     },
 
-    /**
-     * Get all available themes
-     */
     getThemes() {
         return this.themes;
     },
 
-    /**
-     * Get current theme ID
-     */
+    isAuthenticated() {
+        return window.__isAuthenticated === true;
+    },
+
+    getServerTheme() {
+        const meta = document.querySelector('meta[name="user-theme"]');
+        return meta?.content || window.__userTheme || 'blue';
+    },
+
     getCurrentTheme() {
+        if (this.isAuthenticated()) {
+            return this.getServerTheme();
+        }
+
         return localStorage.getItem('gestorpro-theme') || 'blue';
     },
 
-    /**
-     * Set color theme
-     */
-    setTheme(themeId) {
+    applyTheme(themeId) {
         const validTheme = this.themes.find(t => t.id === themeId);
         if (!validTheme) {
             console.warn(`Invalid theme: ${themeId}`);
-            return;
+            return false;
         }
 
-        // Remove all theme attributes
         if (themeId === 'blue') {
             document.documentElement.removeAttribute('data-theme');
         } else {
             document.documentElement.setAttribute('data-theme', themeId);
         }
-        
+
+        return true;
+    },
+
+    setTheme(themeId, { persist = true } = {}) {
+        if (!this.applyTheme(themeId)) {
+            return;
+        }
+
         localStorage.setItem('gestorpro-theme', themeId);
-        
-        // Dispatch custom event for reactivity
+
+        if (this.isAuthenticated()) {
+            window.__userTheme = themeId;
+
+            const meta = document.querySelector('meta[name="user-theme"]');
+            if (meta) {
+                meta.content = themeId;
+            }
+        }
+
+        if (persist && this.isAuthenticated()) {
+            this.persistTheme(themeId);
+        }
+
         window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: themeId } }));
     },
 
-    /**
-     * Load saved theme from localStorage
-     */
-    loadTheme() {
-        const savedTheme = this.getCurrentTheme();
-        this.setTheme(savedTheme);
+    async persistTheme(themeId) {
+        if (!this.isAuthenticated()) {
+            return;
+        }
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+        try {
+            const response = await fetch('/configuracoes/tema', {
+                method: 'PATCH',
+                credentials: 'same-origin',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({ theme_color: themeId }),
+            });
+
+            if (!response.ok) {
+                console.warn('Failed to save theme preference', response.status);
+            }
+        } catch (error) {
+            console.warn('Failed to save theme preference', error);
+        }
     },
 
-    /**
-     * Get theme mode: light, dark, or system
-     */
+    loadTheme() {
+        const savedTheme = this.getCurrentTheme();
+        this.applyTheme(savedTheme);
+        localStorage.setItem('gestorpro-theme', savedTheme);
+    },
+
     getMode() {
         const saved = localStorage.getItem('gestorpro-mode');
         if (saved) {
@@ -92,9 +135,6 @@ const ThemeManager = {
         return 'system';
     },
 
-    /**
-     * Set theme mode
-     */
     setMode(mode) {
         localStorage.setItem('gestorpro-mode', mode);
 
@@ -110,39 +150,26 @@ const ThemeManager = {
         window.dispatchEvent(new CustomEvent('theme-mode-changed', { detail: { mode } }));
     },
 
-    /**
-     * Check if dark mode is enabled
-     */
     isDarkMode() {
         const saved = localStorage.getItem('gestorpro-dark-mode');
         if (saved !== null) {
             return saved === 'true';
         }
-        // Default to system preference
         return window.matchMedia('(prefers-color-scheme: dark)').matches;
     },
 
-    /**
-     * Enable dark mode
-     */
     enableDarkMode() {
         document.documentElement.classList.add('dark');
         localStorage.setItem('gestorpro-dark-mode', 'true');
         window.dispatchEvent(new CustomEvent('dark-mode-changed', { detail: { darkMode: true } }));
     },
 
-    /**
-     * Disable dark mode
-     */
     disableDarkMode() {
         document.documentElement.classList.remove('dark');
         localStorage.setItem('gestorpro-dark-mode', 'false');
         window.dispatchEvent(new CustomEvent('dark-mode-changed', { detail: { darkMode: false } }));
     },
 
-    /**
-     * Toggle dark mode
-     */
     toggleDarkMode() {
         if (this.isDarkMode()) {
             this.disableDarkMode();
@@ -151,9 +178,6 @@ const ThemeManager = {
         }
     },
 
-    /**
-     * Load saved dark mode preference
-     */
     loadDarkMode() {
         if (this.isDarkMode()) {
             document.documentElement.classList.add('dark');
@@ -162,13 +186,9 @@ const ThemeManager = {
         }
     },
 
-    /**
-     * Watch for system dark mode changes
-     */
     watchSystemDarkMode() {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         mediaQuery.addEventListener('change', (e) => {
-            // Only apply if user hasn't set a preference
             if (localStorage.getItem('gestorpro-dark-mode') === null) {
                 if (e.matches) {
                     this.enableDarkMode();
@@ -179,23 +199,18 @@ const ThemeManager = {
         });
     },
 
-    /**
-     * Reset to system preference
-     */
     resetToSystemPreference() {
         localStorage.removeItem('gestorpro-dark-mode');
         this.loadDarkMode();
     }
 };
 
-// Auto-initialize when DOM is ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
 } else {
     ThemeManager.init();
 }
 
-// Make it globally available
 window.ThemeManager = ThemeManager;
 
 export default ThemeManager;

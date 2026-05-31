@@ -4,13 +4,15 @@ use Illuminate\Support\Facades\Storage;
 
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="page-title">DAS - Documento de Arrecadação do Simples Nacional</h2>
+        <h2 class="page-title">Tributos e guias fiscais</h2>
     </x-slot>
 
+    <x-ui.page-back :href="route('financeiro.index')" class="mb-6" />
+
     <x-data-table
-        :createRoute="route('das.create')"
-        createLabel="Novo DAS"
-        searchPlaceholder="Pesquisar DAS..."
+        :createRoute="\App\Support\CurrentCompany::canManageFinance() ? route_with_return('das.create') : null"
+        createLabel="Nova guia"
+        searchPlaceholder="Pesquisar guias..."
         :selectable="false"
         tableId="dasPaymentsTable"
     >
@@ -71,7 +73,7 @@ use Illuminate\Support\Facades\Storage;
             <x-data-table.empty 
                 :colspan="6"
                 message="Nenhum DAS cadastrado"
-                :createRoute="route('das.create')"
+                :createRoute="route_with_return('das.create')"
                 createLabel="Cadastrar primeiro DAS"
             >
                 <x-slot name="icon">

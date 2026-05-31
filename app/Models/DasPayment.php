@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use App\Enums\DasPaymentStatus;
+use App\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class DasPayment extends Model
 {
-    use HasFactory;
+    use BelongsToCompany, HasFactory;
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'reference_month',
         'due_date',
         'payment_date',

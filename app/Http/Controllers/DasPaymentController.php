@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDasPaymentRequest;
 use App\Http\Requests\UpdateDasPaymentRequest;
 use App\Models\DasPayment;
+use App\Support\CurrentCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,20 +14,22 @@ class DasPaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DasPayment::where('user_id', auth()->id());
+        abort_unless(CurrentCompany::canViewFinance(), 403);
 
-        if ($request->has('month')) {
+        $query = DasPayment::forCurrentCompany();
+
+        if ($request->filled('month')) {
             $date = Carbon::createFromFormat('Y-m', $request->month);
             $query->whereYear('reference_month', $date->year)
-                  ->whereMonth('reference_month', $date->month);
+                ->whereMonth('reference_month', $date->month);
         }
 
-        if ($request->has('status')) {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $dasPayments = $query->orderBy('reference_month', 'desc')
-            ->orderBy('due_date', 'desc')
+        $dasPayments = $query->orderByDesc('reference_month')
+            ->orderByDesc('due_date')
             ->paginate(20);
 
         return view('das-payments.index', compact('dasPayments'));
@@ -34,13 +37,18 @@ class DasPaymentController extends Controller
 
     public function create()
     {
+        abort_unless(CurrentCompany::canManageFinance(), 403);
+
         return view('das-payments.create');
     }
 
     public function store(StoreDasPaymentRequest $request)
     {
+        abort_unless(CurrentCompany::canManageFinance(), 403);
+
         $data = [
             'user_id' => auth()->id(),
+            'company_id' => CurrentCompany::id(),
             'reference_month' => Carbon::parse($request->reference_month),
             'due_date' => Carbon::parse($request->due_date),
             'payment_date' => $request->payment_date ? Carbon::parse($request->payment_date) : null,
@@ -48,12 +56,8 @@ class DasPaymentController extends Controller
             'notes' => $request->notes,
         ];
 
-        // Upload do arquivo de comprovante se fornecido
         if ($request->hasFile('receipt_file')) {
-            $file = $request->file('receipt_file');
-            $fileName = 'das-payments/' . auth()->id() . '/' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public', $fileName);
-            $data['receipt_file'] = $fileName;
+            $data['receipt_file'] = $this->storeReceipt($request);
         }
 
         DasPayment::create($data);
@@ -62,29 +66,16 @@ class DasPaymentController extends Controller
             ->with('success', 'DAS cadastrado com sucesso!');
     }
 
-    public function show(DasPayment $dasPayment)
-    {
-        if ($dasPayment->user_id !== auth()->id()) {
-            abort(403);
-        }
-
-        return view('das-payments.show', compact('dasPayment'));
-    }
-
     public function edit(DasPayment $dasPayment)
     {
-        if ($dasPayment->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
         return view('das-payments.edit', compact('dasPayment'));
     }
 
     public function update(UpdateDasPaymentRequest $request, DasPayment $dasPayment)
     {
-        if ($dasPayment->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
         $data = [
             'reference_month' => Carbon::parse($request->reference_month),
@@ -94,17 +85,11 @@ class DasPaymentController extends Controller
             'notes' => $request->notes,
         ];
 
-        // Upload do arquivo de comprovante se fornecido
         if ($request->hasFile('receipt_file')) {
-            // Remove arquivo antigo se existir
-            if ($dasPayment->receipt_file && Storage::exists('public/' . $dasPayment->receipt_file)) {
-                Storage::delete('public/' . $dasPayment->receipt_file);
+            if ($dasPayment->receipt_file && Storage::exists('public/'.$dasPayment->receipt_file)) {
+                Storage::delete('public/'.$dasPayment->receipt_file);
             }
-
-            $file = $request->file('receipt_file');
-            $fileName = 'das-payments/' . auth()->id() . '/' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public', $fileName);
-            $data['receipt_file'] = $fileName;
+            $data['receipt_file'] = $this->storeReceipt($request);
         }
 
         $dasPayment->update($data);
@@ -115,18 +100,24 @@ class DasPaymentController extends Controller
 
     public function destroy(DasPayment $dasPayment)
     {
-        if ($dasPayment->user_id !== auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
-        // Remove arquivo se existir
-        if ($dasPayment->receipt_file && Storage::exists('public/' . $dasPayment->receipt_file)) {
-            Storage::delete('public/' . $dasPayment->receipt_file);
+        if ($dasPayment->receipt_file && Storage::exists('public/'.$dasPayment->receipt_file)) {
+            Storage::delete('public/'.$dasPayment->receipt_file);
         }
 
         $dasPayment->delete();
 
         return redirect()->route('das.index')
             ->with('success', 'DAS excluído com sucesso!');
+    }
+
+    private function storeReceipt(StoreDasPaymentRequest|UpdateDasPaymentRequest $request): string
+    {
+        $file = $request->file('receipt_file');
+        $fileName = 'das-payments/'.CurrentCompany::id().'/'.time().'_'.$file->getClientOriginalName();
+        $file->storeAs('public', $fileName);
+
+        return $fileName;
     }
 }

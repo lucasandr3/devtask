@@ -63,6 +63,16 @@ class CurrentCompany
         return self::role()?->canViewCompanyReports() ?? false;
     }
 
+    public static function canViewFinance(): bool
+    {
+        return self::role()?->canViewFinance() ?? false;
+    }
+
+    public static function canManageFinance(): bool
+    {
+        return self::role()?->canManageFinance() ?? false;
+    }
+
     public static function canApproveReports(): bool
     {
         return self::role()?->canApproveReports() ?? false;

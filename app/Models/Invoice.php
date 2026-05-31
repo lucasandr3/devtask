@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use App\Enums\InvoicePaymentStatus;
 use App\Enums\InvoiceType;
+use App\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Carbon\Carbon;
 
 class Invoice extends Model
 {
-    use HasFactory;
+    use BelongsToCompany, HasFactory;
 
     protected $fillable = [
         'user_id',
+        'company_id',
+        'client_id',
+        'project_id',
         'numero',
         'serie',
         'data_emissao',
@@ -24,6 +28,7 @@ class Invoice extends Model
         'iss_value',
         'tax_amount',
         'invoice_type',
+        'payment_status',
     ];
 
     protected function casts(): array
@@ -34,12 +39,23 @@ class Invoice extends Model
             'iss_value' => 'decimal:2',
             'tax_amount' => 'decimal:2',
             'invoice_type' => InvoiceType::class,
+            'payment_status' => InvoicePaymentStatus::class,
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     public function getFormattedValorAttribute(): string

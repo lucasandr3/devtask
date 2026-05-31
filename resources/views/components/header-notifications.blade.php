@@ -17,6 +17,38 @@
             'wrap' => 'bg-destructive/10 text-destructive',
             'dot' => 'bg-destructive',
         ],
+        'finance_das_overdue' => [
+            'wrap' => 'bg-destructive/10 text-destructive',
+            'dot' => 'bg-destructive',
+        ],
+        'finance_payable_overdue' => [
+            'wrap' => 'bg-destructive/10 text-destructive',
+            'dot' => 'bg-destructive',
+        ],
+        'finance_receivable_overdue' => [
+            'wrap' => 'bg-destructive/10 text-destructive',
+            'dot' => 'bg-destructive',
+        ],
+        'finance_invoice_overdue' => [
+            'wrap' => 'bg-destructive/10 text-destructive',
+            'dot' => 'bg-destructive',
+        ],
+        'finance_das_due_soon' => [
+            'wrap' => 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+            'dot' => 'bg-amber-500',
+        ],
+        'finance_payable_due_soon' => [
+            'wrap' => 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+            'dot' => 'bg-amber-500',
+        ],
+        'finance_receivable_due_soon' => [
+            'wrap' => 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+            'dot' => 'bg-amber-500',
+        ],
+        'finance_invoice_pending' => [
+            'wrap' => 'bg-amber-500/10 text-amber-700 dark:text-amber-400',
+            'dot' => 'bg-amber-500',
+        ],
     ];
 @endphp
 
@@ -95,7 +127,7 @@
                             </svg>
                         </div>
                         <p class="text-sm font-medium text-foreground">Nenhuma pendência</p>
-                        <p class="text-xs text-muted-foreground mt-1">Você está em dia com suas tarefas e aprovações.</p>
+                        <p class="text-xs text-muted-foreground mt-1">Você está em dia com tarefas, aprovações e vencimentos.</p>
                     </div>
                 @endforelse
             </div>

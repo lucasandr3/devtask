@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\BelongsToCompany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 
 class AnnualDeclaration extends Model
 {
-    use HasFactory;
+    use BelongsToCompany, HasFactory;
 
     protected $fillable = [
         'user_id',
+        'company_id',
         'reference_year',
         'total_revenue',
         'total_das_paid',
@@ -39,17 +39,26 @@ class AnnualDeclaration extends Model
 
     public function getInvoicesAttribute()
     {
-        return Invoice::where('user_id', $this->user_id)
-            ->whereYear('data_emissao', $this->reference_year)
-            ->get();
+        $query = Invoice::query()->whereYear('data_emissao', $this->reference_year);
+
+        if ($this->company_id) {
+            return $query->where('company_id', $this->company_id)->get();
+        }
+
+        return $query->where('user_id', $this->user_id)->get();
     }
 
     public function getDasPaymentsAttribute()
     {
-        return DasPayment::where('user_id', $this->user_id)
+        $query = DasPayment::query()
             ->whereYear('reference_month', $this->reference_year)
-            ->where('status', 'paid')
-            ->get();
+            ->where('status', 'paid');
+
+        if ($this->company_id) {
+            return $query->where('company_id', $this->company_id)->get();
+        }
+
+        return $query->where('user_id', $this->user_id)->get();
     }
 
     public function getFormattedTotalRevenueAttribute(): string

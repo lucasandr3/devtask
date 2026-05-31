@@ -11,12 +11,15 @@ class Project extends Model
 {
     protected $fillable = [
         'company_id',
+        'client_id',
         'created_by',
         'name',
         'description',
         'status',
         'starts_at',
         'ends_at',
+        'budget',
+        'hourly_rate',
     ];
 
     protected function casts(): array
@@ -25,12 +28,19 @@ class Project extends Model
             'status' => ProjectStatus::class,
             'starts_at' => 'date',
             'ends_at' => 'date',
+            'budget' => 'decimal:2',
+            'hourly_rate' => 'decimal:2',
         ];
     }
 
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class);
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
     }
 
     public function creator(): BelongsTo

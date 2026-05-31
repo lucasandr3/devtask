@@ -50,6 +50,40 @@
             </x-sidebar-link>
         </div>
 
+        @if(\App\Support\CurrentCompany::canViewFinance())
+            <div>
+                <p x-show="!collapsed" class="px-2 mb-1 text-xs font-medium text-muted-foreground">Financeiro</p>
+                <x-sidebar-link :href="route('financeiro.index')" :active="request()->routeIs('financeiro.index')">
+                    <x-slot name="icon"><x-ui.icon name="finance" /></x-slot>
+                    Visão Geral
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('notas-fiscais.index')" :active="request()->routeIs('notas-fiscais.*')">
+                    <x-slot name="icon"><x-ui.icon name="invoice" /></x-slot>
+                    Faturamento
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('das.index')" :active="request()->routeIs('das.*')">
+                    <x-slot name="icon"><x-ui.icon name="report" /></x-slot>
+                    Tributos
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('financeiro.lancamentos.index')" :active="request()->routeIs('financeiro.lancamentos.*')">
+                    <x-slot name="icon"><x-ui.icon name="table" /></x-slot>
+                    Contas a pagar/receber
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')">
+                    <x-slot name="icon"><x-ui.icon name="clients" /></x-slot>
+                    Clientes
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('declaracao-anual.index')" :active="request()->routeIs('declaracao-anual.*')">
+                    <x-slot name="icon"><x-ui.icon name="report" /></x-slot>
+                    Fechamento anual
+                </x-sidebar-link>
+                <x-sidebar-link :href="route('relatorios.financeiro')" :active="request()->routeIs('relatorios.financeiro*')">
+                    <x-slot name="icon"><x-ui.icon name="report" /></x-slot>
+                    Relatório detalhado
+                </x-sidebar-link>
+            </div>
+        @endif
+
         @if(\App\Support\CurrentCompany::canViewCompanyReports() || \App\Support\CurrentCompany::canManageTeam())
             <div>
                 <p x-show="!collapsed" class="px-2 mb-1 text-xs font-medium text-muted-foreground">Gestão</p>
@@ -132,6 +166,11 @@
                 }
                 if (\App\Support\CurrentCompany::canManageTeam()) {
                     $links[] = ['route' => 'equipe.index', 'label' => 'Equipe', 'match' => 'equipe.*', 'icon' => 'team'];
+                }
+                if (\App\Support\CurrentCompany::canViewFinance()) {
+                    $links[] = ['route' => 'financeiro.index', 'label' => 'Financeiro', 'match' => 'financeiro.index', 'icon' => 'finance'];
+                    $links[] = ['route' => 'notas-fiscais.index', 'label' => 'Faturamento', 'match' => 'notas-fiscais.*', 'icon' => 'invoice'];
+                    $links[] = ['route' => 'clientes.index', 'label' => 'Clientes', 'match' => 'clientes.*', 'icon' => 'clients'];
                 }
             @endphp
             @foreach($links as $link)

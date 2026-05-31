@@ -9,42 +9,43 @@ use Carbon\Carbon;
 
 class AnnualDeclarationService
 {
-    public function generate(int $userId, int $year): AnnualDeclaration
+    public function generate(int $userId, int $year, ?int $companyId = null): AnnualDeclaration
     {
         $startOfYear = Carbon::create($year, 1, 1)->startOfYear();
         $endOfYear = Carbon::create($year, 12, 31)->endOfYear();
 
-        // Busca todas as invoices do ano
-        $invoices = Invoice::where('user_id', $userId)
-            ->whereBetween('data_emissao', [$startOfYear, $endOfYear])
-            ->get();
-
-        // Calcula receita total
-        $totalRevenue = $invoices->sum('valor');
-
-        // Busca todos os DAS pagos do ano
-        $dasPayments = DasPayment::where('user_id', $userId)
+        $invoiceQuery = Invoice::query()->whereBetween('data_emissao', [$startOfYear, $endOfYear]);
+        $dasQuery = DasPayment::query()
             ->whereYear('reference_month', $year)
-            ->where('status', 'paid')
-            ->get();
+            ->where('status', 'paid');
 
-        // Calcula total de DAS pago
-        $totalDasPaid = $dasPayments->sum('amount');
+        if ($companyId) {
+            $invoiceQuery->where('company_id', $companyId);
+            $dasQuery->where('company_id', $companyId);
+        } else {
+            $invoiceQuery->where('user_id', $userId);
+            $dasQuery->where('user_id', $userId);
+        }
 
-        // Cria ou atualiza declaração anual
-        $declaration = AnnualDeclaration::updateOrCreate(
-            [
-                'user_id' => $userId,
-                'reference_year' => $year,
-            ],
-            [
-                'total_revenue' => $totalRevenue,
-                'total_das_paid' => $totalDasPaid,
-                'total_invoices' => $invoices->count(),
-                'generated_at' => Carbon::now(),
-            ]
-        );
+        $invoices = $invoiceQuery->get();
+        $totalRevenue = $invoices->sum('valor');
+        $totalDasPaid = $dasQuery->get()->sum('amount');
 
-        return $declaration;
+        $keys = ['reference_year' => $year];
+        $attrs = [
+            'total_revenue' => $totalRevenue,
+            'total_das_paid' => $totalDasPaid,
+            'total_invoices' => $invoices->count(),
+            'generated_at' => Carbon::now(),
+        ];
+
+        if ($companyId) {
+            $keys['company_id'] = $companyId;
+            $attrs['user_id'] = $userId;
+        } else {
+            $keys['user_id'] = $userId;
+        }
+
+        return AnnualDeclaration::updateOrCreate($keys, $attrs);
     }
 }

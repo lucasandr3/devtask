@@ -14,20 +14,7 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=roboto:400,500,600,700&display=swap" rel="stylesheet" />
 
-        <script>
-            (function() {
-                const darkMode = localStorage.getItem('gestorpro-dark-mode');
-                const theme = localStorage.getItem('gestorpro-theme');
-                
-                if (darkMode === 'true' || (darkMode === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                }
-                
-                if (theme && theme !== 'blue') {
-                    document.documentElement.setAttribute('data-theme', theme);
-                }
-            })();
-        </script>
+        <x-theme-init />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>

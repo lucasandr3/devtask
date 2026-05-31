@@ -33,6 +33,31 @@
                 <x-input-error :messages="$errors->get('status')" class="mt-2" />
             </div>
 
+            @if($clients->isNotEmpty())
+                <div>
+                    <x-input-label for="client_id" value="Cliente" />
+                    <select name="client_id" id="client_id" class="input mt-1">
+                        <option value="">—</option>
+                        @foreach($clients as $client)
+                            <option value="{{ $client->id }}" @selected(old('client_id') == $client->id)>{{ $client->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
+            @if(\App\Support\CurrentCompany::canViewFinance())
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
+                    <div>
+                        <x-input-label for="budget" value="Orçamento (R$)" />
+                        <x-text-input type="text" name="budget" id="budget" value="{{ old('budget') }}" class="mt-1" data-money placeholder="R$ 0,00" />
+                    </div>
+                    <div>
+                        <x-input-label for="hourly_rate" value="Taxa horária cobrada (R$)" />
+                        <x-text-input type="text" name="hourly_rate" id="hourly_rate" value="{{ old('hourly_rate') }}" class="mt-1" data-money placeholder="R$ 0,00" />
+                    </div>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <x-input-label for="starts_at" value="Início" />

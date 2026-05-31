@@ -2,14 +2,23 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\PreparesBrazilianNumericInput;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class StoreWorkContractRequest extends FormRequest
 {
+    use PreparesBrazilianNumericInput;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->prepareBrazilianMoneyFields(['contract_value']);
+        $this->prepareBrazilianDecimalFields(['monthly_hours']);
     }
 
     public function rules(): array

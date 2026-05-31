@@ -4,12 +4,13 @@
         <h2 class="page-title">Nova Nota Fiscal</h2>
     </x-slot>
 
-    <x-ui.page-back :href="route('notas-fiscais.index')" class="mb-6" />
+    <x-ui.page-back :fallback="route('notas-fiscais.index')" class="mb-6" />
 
-    <div>
-        <div class="card p-6">
-            <form method="POST" action="{{ route('notas-fiscais.store') }}" enctype="multipart/form-data" class="space-y-6">
+    <div class="card p-6 w-full">
+            <form method="POST" action="{{ route('notas-fiscais.store') }}" enctype="multipart/form-data" class="space-y-6" id="invoice-form">
                 @csrf
+
+                @include('invoices._xml-import')
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -34,7 +35,7 @@
 
                     <div>
                         <x-input-label for="valor" value="Valor (R$)" />
-                        <x-text-input type="text" name="valor" id="valor" value="{{ old('valor') }}" required class="mt-1" data-money placeholder="0,00" />
+                        <x-text-input type="text" name="valor" id="valor" value="{{ old('valor') }}" required class="mt-1" data-money placeholder="R$ 0,00" />
                         <x-input-error :messages="$errors->get('valor')" class="mt-2" />
                     </div>
                 </div>
@@ -45,9 +46,39 @@
                     <x-input-error :messages="$errors->get('descricao')" class="mt-2" />
                 </div>
 
-                {{-- Campos MEI --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <x-input-label for="client_id" value="Cliente" />
+                        <select name="client_id" id="client_id" class="input mt-1">
+                            <option value="">—</option>
+                            @foreach($clients as $client)
+                                <option value="{{ $client->id }}" data-document="{{ preg_replace('/\D/', '', $client->document ?? '') }}" @selected(old('client_id') == $client->id)>{{ $client->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <x-input-label for="project_id" value="Projeto" />
+                        <select name="project_id" id="project_id" class="input mt-1">
+                            <option value="">—</option>
+                            @foreach($projects as $project)
+                                <option value="{{ $project->id }}" @selected(old('project_id') == $project->id)>{{ $project->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <x-input-label for="payment_status" value="Recebimento" />
+                        <select name="payment_status" id="payment_status" class="input mt-1">
+                            @foreach(\App\Enums\InvoicePaymentStatus::cases() as $status)
+                                <option value="{{ $status->value }}" @selected(old('payment_status', 'received') === $status->value)>{{ $status->label() }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                {{-- Tributação --}}
                 <div class="pt-4 border-t border-border">
-                    <h3 class="text-lg font-semibold mb-4 text-foreground">Informações de Impostos MEI</h3>
+                    <h3 class="text-lg font-semibold mb-1 text-foreground">Tributação (opcional)</h3>
+                    <p class="text-sm text-muted-foreground mb-4">ISS, retenções e classificação do documento fiscal</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -69,13 +100,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                         <div>
                             <x-input-label for="iss_value" value="Valor do ISS (R$)" />
-                            <x-text-input type="text" name="iss_value" id="iss_value" value="{{ old('iss_value') }}" class="mt-1" data-money placeholder="0,00" />
+                            <x-text-input type="text" name="iss_value" id="iss_value" value="{{ old('iss_value') }}" class="mt-1" data-money placeholder="R$ 0,00" />
                             <x-input-error :messages="$errors->get('iss_value')" class="mt-2" />
                         </div>
 
                         <div>
                             <x-input-label for="tax_amount" value="Valor Total de Impostos (R$)" />
-                            <x-text-input type="text" name="tax_amount" id="tax_amount" value="{{ old('tax_amount') }}" class="mt-1" data-money placeholder="0,00" />
+                            <x-text-input type="text" name="tax_amount" id="tax_amount" value="{{ old('tax_amount') }}" class="mt-1" data-money placeholder="R$ 0,00" />
                             <x-input-error :messages="$errors->get('tax_amount')" class="mt-2" />
                         </div>
                     </div>
@@ -83,16 +114,15 @@
 
                 <div>
                     <x-input-label for="arquivo" value="Arquivo PDF (opcional)" />
-                    <x-text-input type="file" name="arquivo" id="arquivo" accept=".pdf" class="mt-1" />
-                    <p class="mt-1 text-sm text-muted-foreground">Apenas arquivos PDF. Tamanho máximo: 10MB</p>
+                    <x-text-input type="file" name="arquivo" id="arquivo" accept=".pdf,application/pdf" class="mt-1" />
+                    <p class="mt-1 text-sm text-muted-foreground">PDF da nota (opcional). Tamanho máximo: 10MB</p>
                     <x-input-error :messages="$errors->get('arquivo')" class="mt-2" />
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-border">
-                    <a href="{{ route('notas-fiscais.index') }}" class="btn-secondary">Cancelar</a>
+                    <a href="{{ back_url(route('notas-fiscais.index')) }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>
             </form>
-        </div>
     </div>
 </x-app-layout>

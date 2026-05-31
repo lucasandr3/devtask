@@ -14,12 +14,14 @@
         { id: 'cyan', name: 'Ciano', color: '#06b6d4' },
         { id: 'fuchsia', name: 'Fúcsia', color: '#d946ef' },
     ],
-    currentTheme: localStorage.getItem('gestorpro-theme') || 'blue',
+    currentTheme: window.ThemeManager?.getCurrentTheme() || 'blue',
     currentMode: window.ThemeManager?.getMode() || 'system',
     darkMode: window.ThemeManager?.isDarkMode() ?? document.documentElement.classList.contains('dark'),
     setTheme(themeId) {
         this.currentTheme = themeId;
-        window.ThemeManager.setTheme(themeId);
+        if (window.ThemeManager) {
+            window.ThemeManager.setTheme(themeId);
+        }
     },
     setMode(mode) {
         this.currentMode = mode;

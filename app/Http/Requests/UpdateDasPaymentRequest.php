@@ -2,13 +2,21 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\PreparesBrazilianNumericInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDasPaymentRequest extends FormRequest
 {
+    use PreparesBrazilianNumericInput;
+
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->prepareBrazilianMoneyFields(['amount']);
     }
 
     public function rules(): array

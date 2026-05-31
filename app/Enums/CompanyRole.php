@@ -32,6 +32,16 @@ enum CompanyRole: string
         return in_array($this, [self::ADMIN, self::LEADER], true);
     }
 
+    public function canViewFinance(): bool
+    {
+        return in_array($this, [self::ADMIN, self::LEADER], true);
+    }
+
+    public function canManageFinance(): bool
+    {
+        return $this === self::ADMIN;
+    }
+
     public function canApproveReports(): bool
     {
         return in_array($this, [self::ADMIN, self::LEADER], true);

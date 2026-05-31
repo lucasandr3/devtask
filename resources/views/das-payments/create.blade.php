@@ -1,12 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="page-title">Novo DAS</h2>
+        <h2 class="page-title">Nova guia tributária</h2>
     </x-slot>
 
-    <x-ui.page-back :href="route('das.index')" class="mb-6" />
+    <x-ui.page-back :fallback="route('das.index')" class="mb-6" />
 
-    <div>
-        <div class="card p-6">
+    <div class="card p-6 w-full">
             <form method="POST" action="{{ route('das.store') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
@@ -27,7 +26,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <x-input-label for="amount" value="Valor (R$)" />
-                        <x-text-input type="text" name="amount" id="amount" value="{{ old('amount') }}" required class="mt-1" data-money placeholder="0,00" />
+                        <x-text-input type="text" name="amount" id="amount" value="{{ old('amount') }}" required class="mt-1" data-money placeholder="R$ 0,00" />
                         <x-input-error :messages="$errors->get('amount')" class="mt-2" />
                     </div>
 
@@ -53,10 +52,9 @@
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-border">
-                    <a href="{{ route('das.index') }}" class="btn-secondary">Cancelar</a>
+                    <a href="{{ back_url(route('das.index')) }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>
             </form>
-        </div>
     </div>
 </x-app-layout>

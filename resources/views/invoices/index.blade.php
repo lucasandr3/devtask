@@ -1,10 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="page-title">Notas Fiscais</h2>
+        <h2 class="page-title">Faturamento</h2>
     </x-slot>
 
+    <x-ui.page-back :href="route('financeiro.index')" class="mb-6" />
+
     <x-data-table
-        :createRoute="route('notas-fiscais.create')"
+        :createRoute="\App\Support\CurrentCompany::canManageFinance() ? route_with_return('notas-fiscais.create') : null"
         createLabel="Nova Nota Fiscal"
         searchPlaceholder="Pesquisar notas fiscais..."
         :selectable="false"
@@ -64,7 +66,7 @@
             <x-data-table.empty 
                 :colspan="5"
                 message="Nenhuma nota fiscal cadastrada"
-                :createRoute="route('notas-fiscais.create')"
+                :createRoute="route_with_return('notas-fiscais.create')"
                 createLabel="Criar primeira nota fiscal"
             >
                 <x-slot name="icon">

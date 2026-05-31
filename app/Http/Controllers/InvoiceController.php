@@ -2,33 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\InvoicePaymentStatus;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Models\Client;
 use App\Models\Invoice;
+use App\Services\InvoiceXmlParserService;
+use App\Support\CurrentCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class InvoiceController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Invoice::where('user_id', auth()->id());
+        abort_unless(CurrentCompany::canViewFinance(), 403);
 
-        if ($request->has('numero')) {
-            $query->where('numero', 'like', '%' . $request->numero . '%');
+        $query = Invoice::forCurrentCompany()->with(['client', 'project']);
+
+        if ($request->filled('numero')) {
+            $query->where('numero', 'like', '%'.$request->numero.'%');
         }
 
-        if ($request->has('data_inicio')) {
+        if ($request->filled('data_inicio')) {
             $query->where('data_emissao', '>=', $request->data_inicio);
         }
 
-        if ($request->has('data_fim')) {
+        if ($request->filled('data_fim')) {
             $query->where('data_emissao', '<=', $request->data_fim);
         }
 
-        $invoices = $query->orderBy('data_emissao', 'desc')
-            ->orderBy('created_at', 'desc')
+        $invoices = $query->orderByDesc('data_emissao')
+            ->orderByDesc('created_at')
             ->paginate(20);
 
         return view('invoices.index', compact('invoices'));
@@ -36,30 +43,48 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        return view('invoices.create');
+        abort_unless(CurrentCompany::canManageFinance(), 403);
+
+        $clients = Client::forCurrentCompany()->orderBy('name')->get();
+        $projects = CurrentCompany::projectsQuery()->orderBy('name')->get();
+
+        return view('invoices.create', compact('clients', 'projects'));
+    }
+
+    public function importXml(Request $request, InvoiceXmlParserService $parser)
+    {
+        abort_unless(CurrentCompany::canManageFinance(), 403);
+
+        $request->validate([
+            'xml' => ['required', 'file', 'mimes:xml', 'mimetypes:text/xml,application/xml', 'max:5120'],
+        ]);
+
+        try {
+            $content = $request->file('xml')->get();
+            $data = $parser->parse($content);
+
+            return response()->json([
+                'message' => 'XML importado com sucesso.',
+                'data' => $data,
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => collect($e->errors())->flatten()->first() ?? 'XML inválido.',
+                'errors' => $e->errors(),
+            ], 422);
+        }
     }
 
     public function store(StoreInvoiceRequest $request)
     {
-        $data = [
-            'user_id' => auth()->id(),
-            'numero' => $request->numero,
-            'serie' => $request->serie ?? '1',
-            'data_emissao' => Carbon::parse($request->data_emissao),
-            'valor' => $request->valor,
-            'descricao' => $request->descricao,
-            'service_code' => $request->service_code,
-            'iss_value' => $request->iss_value,
-            'tax_amount' => $request->tax_amount,
-            'invoice_type' => $request->invoice_type ?? 'service',
-        ];
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
-        // Upload do arquivo PDF se fornecido
+        $data = $this->invoicePayload($request);
+        $data['user_id'] = auth()->id();
+        $data['company_id'] = CurrentCompany::id();
+
         if ($request->hasFile('arquivo')) {
-            $file = $request->file('arquivo');
-            $fileName = 'invoices/' . auth()->id() . '/' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public', $fileName);
-            $data['arquivo'] = $fileName;
+            $data['arquivo'] = $this->storePdf($request);
         }
 
         Invoice::create($data);
@@ -70,51 +95,34 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canViewFinance(), 403);
+
+        $invoice->load(['client', 'project']);
 
         return view('invoices.show', compact('invoice'));
     }
 
     public function edit(Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
-        return view('invoices.edit', compact('invoice'));
+        $clients = Client::forCurrentCompany()->orderBy('name')->get();
+        $projects = CurrentCompany::projectsQuery()->orderBy('name')->get();
+
+        return view('invoices.edit', compact('invoice', 'clients', 'projects'));
     }
 
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
-        $data = [
-            'numero' => $request->numero,
-            'serie' => $request->serie ?? '1',
-            'data_emissao' => Carbon::parse($request->data_emissao),
-            'valor' => $request->valor,
-            'descricao' => $request->descricao,
-            'service_code' => $request->service_code,
-            'iss_value' => $request->iss_value,
-            'tax_amount' => $request->tax_amount,
-            'invoice_type' => $request->invoice_type ?? 'service',
-        ];
+        $data = $this->invoicePayload($request);
 
-        // Upload do arquivo PDF se fornecido
         if ($request->hasFile('arquivo')) {
-            // Remove arquivo antigo se existir
-            if ($invoice->arquivo && Storage::exists('public/' . $invoice->arquivo)) {
-                Storage::delete('public/' . $invoice->arquivo);
+            if ($invoice->arquivo && Storage::exists('public/'.$invoice->arquivo)) {
+                Storage::delete('public/'.$invoice->arquivo);
             }
-
-            $file = $request->file('arquivo');
-            $fileName = 'invoices/' . auth()->id() . '/' . time() . '_' . $file->getClientOriginalName();
-            $file->storeAs('public', $fileName);
-            $data['arquivo'] = $fileName;
+            $data['arquivo'] = $this->storePdf($request);
         }
 
         $invoice->update($data);
@@ -125,13 +133,10 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canManageFinance(), 403);
 
-        // Remove arquivo se existir
-        if ($invoice->arquivo && Storage::exists('public/' . $invoice->arquivo)) {
-            Storage::delete('public/' . $invoice->arquivo);
+        if ($invoice->arquivo && Storage::exists('public/'.$invoice->arquivo)) {
+            Storage::delete('public/'.$invoice->arquivo);
         }
 
         $invoice->delete();
@@ -142,32 +147,54 @@ class InvoiceController extends Controller
 
     public function download(Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canViewFinance(), 403);
 
-        if (!$invoice->arquivo || !Storage::exists('public/' . $invoice->arquivo)) {
+        if (! $invoice->arquivo || ! Storage::exists('public/'.$invoice->arquivo)) {
             return redirect()->route('notas-fiscais.index')
                 ->with('error', 'Arquivo não encontrado.');
         }
 
-        return Storage::download('public/' . $invoice->arquivo, 'nota-fiscal-' . $invoice->numero . '.pdf');
+        return Storage::download('public/'.$invoice->arquivo, 'nota-fiscal-'.$invoice->numero.'.pdf');
     }
 
     public function view(Invoice $invoice)
     {
-        if ($invoice->user_id != auth()->id()) {
-            abort(403);
-        }
+        abort_unless(CurrentCompany::canViewFinance(), 403);
 
-        if (!$invoice->arquivo || !Storage::exists('public/' . $invoice->arquivo)) {
+        if (! $invoice->arquivo || ! Storage::exists('public/'.$invoice->arquivo)) {
             return redirect()->route('notas-fiscais.index')
                 ->with('error', 'Arquivo não encontrado.');
         }
 
-        $filePath = Storage::path('public/' . $invoice->arquivo);
-        return response()->file($filePath, [
+        return response()->file(Storage::path('public/'.$invoice->arquivo), [
             'Content-Type' => 'application/pdf',
         ]);
+    }
+
+    private function invoicePayload(StoreInvoiceRequest|UpdateInvoiceRequest $request): array
+    {
+        return [
+            'numero' => $request->numero,
+            'serie' => $request->serie ?? '1',
+            'data_emissao' => Carbon::parse($request->data_emissao),
+            'valor' => $request->valor,
+            'descricao' => $request->descricao,
+            'service_code' => $request->service_code,
+            'iss_value' => $request->iss_value,
+            'tax_amount' => $request->tax_amount,
+            'invoice_type' => $request->invoice_type ?? 'service',
+            'payment_status' => $request->payment_status ?? InvoicePaymentStatus::RECEIVED->value,
+            'client_id' => $request->client_id ?: null,
+            'project_id' => $request->project_id ?: null,
+        ];
+    }
+
+    private function storePdf(StoreInvoiceRequest|UpdateInvoiceRequest $request): string
+    {
+        $file = $request->file('arquivo');
+        $fileName = 'invoices/'.CurrentCompany::id().'/'.time().'_'.$file->getClientOriginalName();
+        $file->storeAs('public', $fileName);
+
+        return $fileName;
     }
 }

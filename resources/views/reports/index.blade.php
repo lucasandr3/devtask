@@ -63,7 +63,7 @@
                         Relatório Financeiro
                     </h3>
                     <p class="text-muted-foreground text-sm mb-4">
-                        Acompanhe receitas, despesas com DAS, notas fiscais e saldo mensal.
+                        Acompanhe faturamento, despesas, tributos e resultado do período.
                     </p>
 
                     {{-- Stats --}}
@@ -79,7 +79,7 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('relatorios.financeiro') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors">
+                    <a href="{{ \App\Support\CurrentCompany::canViewFinance() ? route('financeiro.index') : route('relatorios.financeiro') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>

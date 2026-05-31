@@ -55,11 +55,40 @@ class TaskController extends Controller
             return view('tasks.index', compact('tasksByStatus', 'view', 'projects', 'activeTimerTaskId'));
         }
 
-        $tasks = $query->orderBy('work_date', 'desc')
+        $allTasks = $query->orderBy('work_date', 'desc')
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->get();
 
-        return view('tasks.index', compact('tasks', 'view', 'projects', 'activeTimerTaskId'));
+        $tasksByProject = collect();
+
+        if ($request->filled('project_id')) {
+            $tasksByProject->push([
+                'project' => $projects->firstWhere('id', (int) $request->project_id),
+                'tasks' => $allTasks,
+            ]);
+        } else {
+            foreach ($projects as $project) {
+                $projectTasks = $allTasks->where('project_id', $project->id)->values();
+
+                if ($projectTasks->isNotEmpty()) {
+                    $tasksByProject->push([
+                        'project' => $project,
+                        'tasks' => $projectTasks,
+                    ]);
+                }
+            }
+
+            $orphanTasks = $allTasks->whereNull('project_id')->values();
+
+            if ($orphanTasks->isNotEmpty()) {
+                $tasksByProject->push([
+                    'project' => null,
+                    'tasks' => $orphanTasks,
+                ]);
+            }
+        }
+
+        return view('tasks.index', compact('tasksByProject', 'view', 'projects', 'activeTimerTaskId'));
     }
 
     public function show(Task $task)

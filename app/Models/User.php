@@ -24,6 +24,7 @@ class User extends Authenticatable
         'company_name',
         'cnpj',
         'current_company_id',
+        'theme_color',
     ];
 
     /**

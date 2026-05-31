@@ -3,6 +3,9 @@
         @if($view !== 'table')
             <input type="hidden" name="view" value="{{ $view }}">
         @endif
+        @if(request('status'))
+            <input type="hidden" name="status" value="{{ request('status') }}">
+        @endif
         <x-ui.select-input name="project_id" class="w-full sm:w-52" onchange="this.form.submit()">
             <option value="">Todos os projetos</option>
             @foreach($projects as $project)

@@ -151,59 +151,82 @@
         @endpush
 
     @else
-        {{-- Table View --}}
-        <x-data-table
-            :createRoute="null"
-            searchPlaceholder="Pesquisar tarefas..."
-            :filters="['todos' => 'Todos', 'todo' => 'A Fazer', 'doing' => 'Em Progresso', 'done' => 'Concluído', 'cancelled' => 'Cancelada']"
-            filterParam="status"
-            :selectable="false"
-            tableId="tarefasTable"
-        >
-            <x-slot name="toolbarLeading">@include('tasks.partials.toolbar')</x-slot>
-            <x-slot name="toolbarTrailing">@include('tasks.partials.toolbar-actions')</x-slot>
-
-            <x-slot name="head">
-                <x-data-table.header>Título</x-data-table.header>
-                <x-data-table.header>Projeto</x-data-table.header>
-                <x-data-table.header class="data-table-th-compact">Status</x-data-table.header>
-                <x-data-table.header align="right" class="data-table-th-actions">Ações</x-data-table.header>
-            </x-slot>
-
-            @forelse($tasks as $task)
-                <x-data-table.row>
-                    <x-data-table.title-cell :title="$task->title" />
-                    <x-data-table.cell truncate>{{ $task->project?->name ?? '-' }}</x-data-table.cell>
-                    <x-data-table.cell class="data-table-td-compact">
-                        <x-status-badge :status="$task->status->label()" :color="$task->status->color()" />
-                    </x-data-table.cell>
-                    <x-data-table.actions 
-                        :viewRoute="route('tarefas.show', $task)"
-                        :editRoute="route('tarefas.editar', $task)"
-                        :deleteRoute="\App\Support\CurrentCompany::canManageProjects() ? route('tarefas.destroy', $task) : null"
-                        deleteConfirm="Tem certeza que deseja excluir esta tarefa?"
+        {{-- Table View — agrupada por projeto --}}
+        <x-ui.page-toolbar class="mb-4">
+            <x-slot:leading>@include('tasks.partials.toolbar')</x-slot:leading>
+            <x-slot:trailing>@include('tasks.partials.toolbar-actions')</x-slot:trailing>
+            <x-slot:bottom>
+                <div class="page-toolbar-bottom-inner">
+                    <x-ui.search-input
+                        placeholder="Pesquisar tarefas..."
+                        id="tarefasGroupsSearch"
+                        class="w-full sm:max-w-xs"
                     />
-                </x-data-table.row>
-            @empty
-                <x-data-table.empty 
-                    :colspan="4"
-                    message="Nenhuma tarefa encontrada"
-                    :createRoute="\App\Support\CurrentCompany::canManageProjects() ? route('tarefas.create') : null"
-                    createLabel="Criar primeira tarefa"
-                >
-                    <x-slot name="icon">
-                        <svg class="data-table-empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                        </svg>
-                    </x-slot>
-                </x-data-table.empty>
-            @endforelse
 
-            @if($tasks->hasPages())
-                <x-slot name="pagination">
-                    {{ $tasks->links() }}
-                </x-slot>
-            @endif
-        </x-data-table>
+                    <div class="page-toolbar-bottom-actions">
+                        <div class="filter-tabs">
+                            @foreach(['todos' => 'Todos', 'todo' => 'A Fazer', 'doing' => 'Em Progresso', 'done' => 'Concluído', 'cancelled' => 'Cancelada'] as $key => $label)
+                                <a
+                                    href="{{ request()->fullUrlWithQuery(['status' => $key === 'todos' ? null : $key]) }}"
+                                    class="filter-tab {{ (request('status', 'todos') === $key || (request('status') === null && $key === 'todos')) ? 'filter-tab-active' : '' }}"
+                                >
+                                    {{ $label }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </x-slot:bottom>
+        </x-ui.page-toolbar>
+
+        <div class="space-y-6" id="tarefasTableGroups">
+            @forelse($tasksByProject as $group)
+                @include('tasks.partials.project-tasks-group', ['group' => $group])
+            @empty
+                <div class="card px-6 py-12 text-center">
+                    <svg class="data-table-empty-icon mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    <p class="text-muted-foreground">Nenhuma tarefa encontrada</p>
+                    @if(\App\Support\CurrentCompany::canManageProjects())
+                        <a href="{{ route('tarefas.create') }}" class="link-primary mt-2 inline-block">Criar primeira tarefa</a>
+                    @endif
+                </div>
+            @endforelse
+        </div>
+
+        @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.querySelector('#tarefasGroupsSearch .search-input');
+
+                if (!searchInput) return;
+
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+
+                    document.querySelectorAll('[data-project-group]').forEach(function(group) {
+                        let visibleCount = 0;
+
+                        group.querySelectorAll('.task-row').forEach(function(row) {
+                            const show = !searchTerm || row.textContent.toLowerCase().includes(searchTerm);
+                            row.style.display = show ? '' : 'none';
+                            if (show) visibleCount++;
+                        });
+
+                        const hasMatchingTasks = !searchTerm || visibleCount > 0;
+                        group.style.display = hasMatchingTasks ? '' : 'none';
+
+                        if (searchTerm && visibleCount > 0 && window.Alpine) {
+                            const data = Alpine.$data(group);
+                            if (data && typeof data.open !== 'undefined') {
+                                data.open = true;
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+        @endpush
     @endif
 </x-app-layout>

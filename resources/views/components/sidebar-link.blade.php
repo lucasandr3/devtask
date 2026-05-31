@@ -12,7 +12,7 @@
     x-bind:data-tooltip="collapsed ? @js($tooltipLabel) : null"
     x-bind:aria-label="collapsed ? @js($tooltipLabel) : null"
 >
-    <span class="flex-shrink-0 [&>svg]:size-4">{{ $icon }}</span>
+    <span class="flex-shrink-0 [&_svg]:size-4 [&_.material-symbols-outlined]:text-[1.125rem] [&_.material-symbols-outlined]:leading-none">{{ $icon }}</span>
     <span
         x-show="!collapsed"
         x-transition:enter="transition-opacity duration-200"

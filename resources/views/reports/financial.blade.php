@@ -3,7 +3,7 @@
         <h2 class="page-title">Relatório Financeiro</h2>
     </x-slot>
 
-    <x-ui.page-back :href="route('relatorios.index')" class="mb-6" />
+    <x-ui.page-back :fallback="\App\Support\CurrentCompany::canViewFinance() ? route('financeiro.index') : route('relatorios.index')" class="mb-6" />
 
     <div class="space-y-6 w-full">
         {{-- Filtros e Ações --}}
@@ -78,7 +78,7 @@
                         </svg>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-sm text-muted-foreground">DAS Pago</p>
+                        <p class="text-sm text-muted-foreground">Tributos pagos</p>
                         <p class="font-bold text-blue-600 dark:text-blue-400" style="font-size: 19px;">{{ $financialData['formatted_total_das_paid'] }}</p>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         </svg>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-sm text-muted-foreground">DAS Pendente</p>
+                        <p class="text-sm text-muted-foreground">Tributos pendentes</p>
                         <p class="font-bold text-amber-600 dark:text-amber-400" style="font-size: 19px;">{{ $financialData['formatted_total_das_pending'] }}</p>
                     </div>
                 </div>
@@ -182,7 +182,7 @@
         {{-- Pagamentos DAS --}}
         <div class="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
             <div class="px-6 py-4 border-b border-border flex items-center justify-between">
-                <h3 class="text-lg font-semibold text-foreground">Pagamentos DAS</h3>
+                <h3 class="text-lg font-semibold text-foreground">Guias e tributos</h3>
                 <span class="px-3 py-1 text-sm font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full">
                     {{ $financialData['das_payments']->count() }} {{ $financialData['das_payments']->count() === 1 ? 'guia' : 'guias' }}
                 </span>
@@ -221,7 +221,7 @@
                                         <svg class="w-12 h-12 text-gray-300 dark:text-muted-foreground mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                                         </svg>
-                                        <p class="text-muted-foreground">Nenhum DAS encontrado para este período.</p>
+                                        <p class="text-muted-foreground">Nenhuma guia encontrada para este período.</p>
                                     </div>
                                 </td>
                             </tr>

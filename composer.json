@@ -30,7 +30,9 @@
         },
         "files": [
             "app/Helpers/TimeHelper.php",
-            "app/Helpers/StatusHelper.php"
+            "app/Helpers/StatusHelper.php",
+            "app/Helpers/BackNavigation.php",
+            "app/Helpers/BrazilianFormat.php"
         ]
     },
     "autoload-dev": {

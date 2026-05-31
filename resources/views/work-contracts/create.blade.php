@@ -19,14 +19,14 @@
 
                 <div>
                     <x-input-label for="contract_value" value="Valor do Contrato (R$)" />
-                    <x-text-input type="number" name="contract_value" id="contract_value" value="{{ old('contract_value') }}" step="0.01" min="0" class="mt-1" placeholder="0.00" />
+                    <x-text-input type="text" name="contract_value" id="contract_value" value="{{ old('contract_value') }}" class="mt-1" data-money placeholder="R$ 0,00" />
                     <p class="mt-1 text-sm text-muted-foreground">Ex: 5000.00</p>
                     <x-input-error :messages="$errors->get('contract_value')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="monthly_hours" value="Horas Mensais" />
-                    <x-text-input type="number" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours') }}" step="0.01" min="0.01" required class="mt-1" placeholder="220" />
+                    <x-text-input type="text" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours') }}" required class="mt-1" data-decimal placeholder="220,00" />
                     <p class="mt-1 text-sm text-muted-foreground">Digite a quantidade de horas mensais (ex: 220 ou 220.5)</p>
                     <x-input-error :messages="$errors->get('monthly_hours')" class="mt-2" />
                 </div>

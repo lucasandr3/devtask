@@ -8,9 +8,11 @@ use App\Models\Invoice;
 use App\Models\EmailAccount;
 use App\Models\Task;
 use App\Models\PullRequest;
+use App\Services\CompanyFinancialService;
 use App\Services\FinancialReportService;
 use App\Services\PdfService;
 use App\Services\EmailService;
+use App\Support\CurrentCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -18,6 +20,7 @@ class ReportController extends Controller
 {
     public function __construct(
         private FinancialReportService $financialReportService,
+        private CompanyFinancialService $companyFinancialService,
         private PdfService $pdfService,
         private EmailService $emailService
     ) {}
@@ -48,16 +51,22 @@ class ReportController extends Controller
         $currentMonthHoursFormatted = sprintf('%02d:%02d', $totalHours, $remainingMinutes);
 
         // Financeiro do mês
-        $invoicesCount = Invoice::where('user_id', $userId)
-            ->whereYear('data_emissao', Carbon::now()->year)
-            ->whereMonth('data_emissao', Carbon::now()->month)
-            ->count();
-        
-        $totalRevenue = Invoice::where('user_id', $userId)
-            ->whereYear('data_emissao', Carbon::now()->year)
-            ->whereMonth('data_emissao', Carbon::now()->month)
-            ->sum('valor');
-        $totalRevenueFormatted = 'R$ ' . number_format($totalRevenue, 2, ',', '.');
+        $currentMonth = Carbon::now()->format('Y-m');
+        if (CurrentCompany::canViewFinance() && CurrentCompany::id()) {
+            $financial = $this->companyFinancialService->getMonthlyFinancial(CurrentCompany::id(), $currentMonth);
+            $invoicesCount = $financial['invoices']->count();
+            $totalRevenueFormatted = $financial['formatted_total_revenue'];
+        } else {
+            $invoicesCount = Invoice::where('user_id', $userId)
+                ->whereYear('data_emissao', Carbon::now()->year)
+                ->whereMonth('data_emissao', Carbon::now()->month)
+                ->count();
+            $totalRevenue = Invoice::where('user_id', $userId)
+                ->whereYear('data_emissao', Carbon::now()->year)
+                ->whereMonth('data_emissao', Carbon::now()->month)
+                ->sum('valor');
+            $totalRevenueFormatted = 'R$ '.number_format($totalRevenue, 2, ',', '.');
+        }
 
         // Tarefas do mês
         $tasksCount = Task::where('user_id', $userId)
@@ -125,10 +134,15 @@ class ReportController extends Controller
      */
     public function financial(Request $request)
     {
-        $userId = auth()->id();
         $month = $request->get('month', Carbon::now()->format('Y-m'));
 
-        $financialData = $this->financialReportService->getMonthlyFinancial($userId, $month);
+        if (CurrentCompany::canViewFinance() && CurrentCompany::id()) {
+            $financialData = $this->companyFinancialService->getMonthlyFinancial(CurrentCompany::id(), $month);
+
+            return view('reports.financial', compact('financialData', 'month'));
+        }
+
+        $financialData = $this->financialReportService->getMonthlyFinancial(auth()->id(), $month);
 
         return view('reports.financial', compact('financialData', 'month'));
     }

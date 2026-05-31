@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Enums\MonthlyReportStatus;
 use App\Enums\TaskStatus;
 use App\Models\MonthlyReport;
+use App\Services\FinancialAlertService;
 use Illuminate\Support\Collection;
 
 class NotificationFeed
@@ -61,6 +62,22 @@ class NotificationFeed
             }
         }
 
+        if (CurrentCompany::canViewFinance() && CurrentCompany::id()) {
+            app(FinancialAlertService::class)
+                ->collect(CurrentCompany::id())
+                ->take(5)
+                ->each(function (array $alert) use ($items) {
+                    $items->push([
+                        'type' => $alert['type'],
+                        'icon' => $alert['icon'],
+                        'title' => $alert['title'],
+                        'message' => $alert['message'].' · '.$alert['formatted_amount'],
+                        'url' => $alert['url'],
+                        'at' => $alert['at'],
+                    ]);
+                });
+        }
+
         CurrentCompany::tasksQuery()
             ->where('status', TaskStatus::TODO)
             ->where('assigned_to', $userId)
@@ -81,7 +98,7 @@ class NotificationFeed
         return $items
             ->sortByDesc(fn (array $item) => $item['at'])
             ->values()
-            ->take(10);
+            ->take(15);
     }
 
     public static function count(): int

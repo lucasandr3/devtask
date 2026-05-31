@@ -1,7 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="page-title">Declaração Anual do MEI</h2>
+        <h2 class="page-title">Fechamento anual</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('financeiro.index')" class="mb-6" />
 
     <x-data-table
         searchPlaceholder="Pesquisar declarações..."
@@ -10,6 +12,7 @@
     >
         {{-- Gerar Declaração --}}
         <x-slot name="actions">
+            @if(\App\Support\CurrentCompany::canManageFinance())
             <form method="POST" action="{{ route('declaracao-anual.gerar') }}" class="flex flex-wrap items-center gap-2">
                 @csrf
                 <input type="number" name="year" value="{{ date('Y') }}" min="2020" max="{{ date('Y') }}" class="select-input w-24" placeholder="Ano">
@@ -18,12 +21,13 @@
                     <span class="hidden sm:inline">Gerar Declaração</span>
                 </button>
             </form>
+            @endif
         </x-slot>
 
         <x-slot name="head">
             <x-data-table.header>Ano</x-data-table.header>
             <x-data-table.header>Receita Total</x-data-table.header>
-            <x-data-table.header>DAS Pago</x-data-table.header>
+            <x-data-table.header>Tributos pagos</x-data-table.header>
             <x-data-table.header>Receita Líquida</x-data-table.header>
             <x-data-table.header>Notas Fiscais</x-data-table.header>
             <x-data-table.header>Gerado em</x-data-table.header>
