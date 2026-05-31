@@ -1,4 +1,4 @@
-@props(['align' => 'left'])
+@props(['align' => 'left', 'truncate' => false])
 
 @php
 $alignClass = match($align) {
@@ -6,8 +6,9 @@ $alignClass = match($align) {
     'center' => 'text-center',
     default => 'text-left',
 };
+$truncateClass = $truncate ? 'data-table-td-truncate' : '';
 @endphp
 
-<td {{ $attributes->merge(['class' => "data-table-td $alignClass"]) }}>
+<td {{ $attributes->merge(['class' => "data-table-td $alignClass $truncateClass"]) }}>
     {{ $slot }}
 </td>

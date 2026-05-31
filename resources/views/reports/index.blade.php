@@ -3,12 +3,12 @@
         <h2 class="page-title">Relatórios</h2>
     </x-slot>
 
-    <div class="max-w-7xl mx-auto">
+    <div class="w-full">
         {{-- Cards Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {{-- Card: Relatório de Horas --}}
-            <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300">
+            <div class="group bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-xl group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
@@ -21,18 +21,18 @@
                         </span>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 class="text-xl font-bold text-foreground mb-2">
                         Relatório de Horas
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <p class="text-muted-foreground text-sm mb-4">
                         Visualize o registro de horas trabalhadas, médias diárias e totais por período.
                     </p>
 
                     {{-- Stats --}}
-                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-muted/50 bg-secondary/50 rounded-xl">
                         <div class="text-center">
                             <p class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ $currentMonthHoursFormatted }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Este mês</p>
+                            <p class="text-xs text-muted-foreground">Este mês</p>
                         </div>
                     </div>
 
@@ -46,7 +46,7 @@
             </div>
 
             {{-- Card: Relatório Financeiro --}}
-            <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300">
+            <div class="group bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-green-100 dark:bg-green-900/30 rounded-xl group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
@@ -59,23 +59,23 @@
                         </span>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 class="text-xl font-bold text-foreground mb-2">
                         Relatório Financeiro
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <p class="text-muted-foreground text-sm mb-4">
                         Acompanhe receitas, despesas com DAS, notas fiscais e saldo mensal.
                     </p>
 
                     {{-- Stats --}}
-                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-muted/50 bg-secondary/50 rounded-xl">
                         <div class="text-center flex-1">
                             <p class="text-xl font-bold text-green-600 dark:text-green-400">{{ $totalRevenueFormatted }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Receita do mês</p>
+                            <p class="text-xs text-muted-foreground">Receita do mês</p>
                         </div>
                         <div class="w-px h-10 bg-gray-200 dark:bg-slate-600"></div>
                         <div class="text-center">
-                            <p class="text-xl font-bold text-gray-700 dark:text-gray-300">{{ $invoicesCount }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Notas</p>
+                            <p class="text-xl font-bold text-foreground">{{ $invoicesCount }}</p>
+                            <p class="text-xs text-muted-foreground">Notas</p>
                         </div>
                     </div>
 
@@ -89,7 +89,7 @@
             </div>
 
             {{-- Card: Relatórios Mensais --}}
-            <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300">
+            <div class="group bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-purple-100 dark:bg-purple-900/30 rounded-xl group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
@@ -102,24 +102,24 @@
                         </span>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 class="text-xl font-bold text-foreground mb-2">
                         Relatórios Mensais
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <p class="text-muted-foreground text-sm mb-4">
                         Gere e acompanhe relatórios mensais completos com horas, tarefas e PRs.
                     </p>
 
                     {{-- Stats --}}
-                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-muted/50 bg-secondary/50 rounded-xl">
                         <div class="text-center flex-1">
                             <p class="text-xl font-bold text-purple-600 dark:text-purple-400">{{ $monthlyReportsCount }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Relatórios</p>
+                            <p class="text-xs text-muted-foreground">Relatórios</p>
                         </div>
                         @if($pendingReportsCount > 0)
                         <div class="w-px h-10 bg-gray-200 dark:bg-slate-600"></div>
                         <div class="text-center">
                             <p class="text-xl font-bold text-amber-600 dark:text-amber-400">{{ $pendingReportsCount }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Rascunhos</p>
+                            <p class="text-xs text-muted-foreground">Rascunhos</p>
                         </div>
                         @endif
                     </div>
@@ -134,7 +134,7 @@
             </div>
 
             {{-- Card: Relatório de Tarefas --}}
-            <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300">
+            <div class="group bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/50 transition-colors">
@@ -147,23 +147,23 @@
                         </span>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 class="text-xl font-bold text-foreground mb-2">
                         Relatório de Tarefas
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <p class="text-muted-foreground text-sm mb-4">
                         Visualize tarefas e pull requests registrados por período.
                     </p>
 
                     {{-- Stats --}}
-                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-gray-50 dark:bg-slate-700/50 rounded-xl">
+                    <div class="flex items-center gap-4 mb-6 py-3 px-4 bg-muted/50 bg-secondary/50 rounded-xl">
                         <div class="text-center flex-1">
                             <p class="text-xl font-bold text-indigo-600 dark:text-indigo-400">{{ $tasksCount }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">Tarefas</p>
+                            <p class="text-xs text-muted-foreground">Tarefas</p>
                         </div>
                         <div class="w-px h-10 bg-gray-200 dark:bg-slate-600"></div>
                         <div class="text-center flex-1">
                             <p class="text-xl font-bold text-purple-600 dark:text-purple-400">{{ $prsCount }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">PRs</p>
+                            <p class="text-xs text-muted-foreground">PRs</p>
                         </div>
                     </div>
 
@@ -177,7 +177,7 @@
             </div>
 
             {{-- Card: Ações Rápidas --}}
-            <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 overflow-hidden hover:shadow-lg hover:border-primary-300 dark:hover:border-primary-600 transition-all duration-300">
+            <div class="group bg-card rounded-2xl shadow-sm border border-border overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
                 <div class="p-6">
                     <div class="flex items-start justify-between mb-4">
                         <div class="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-xl group-hover:bg-amber-200 dark:group-hover:bg-amber-900/50 transition-colors">
@@ -190,10 +190,10 @@
                         </span>
                     </div>
                     
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                    <h3 class="text-xl font-bold text-foreground mb-2">
                         Ações Rápidas
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                    <p class="text-muted-foreground text-sm mb-4">
                         Acesse rapidamente as funções mais utilizadas do sistema.
                     </p>
 
@@ -210,14 +210,14 @@
                             </button>
                         </form>
                         
-                        <a href="{{ route('horas.index') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors">
+                        <a href="{{ route('horas.index') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-muted hover:bg-gray-200 hover:bg-accent text-foreground font-semibold rounded-xl transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                             </svg>
                             Ver Espelho Mensal
                         </a>
 
-                        <a href="{{ route('notas-fiscais.index') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl transition-colors">
+                        <a href="{{ route('notas-fiscais.index') }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-muted hover:bg-gray-200 hover:bg-accent text-foreground font-semibold rounded-xl transition-colors">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>

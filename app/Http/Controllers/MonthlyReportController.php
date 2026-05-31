@@ -8,6 +8,7 @@ use App\Models\MonthlyReport;
 use App\Services\MonthlyReportService;
 use App\Services\PdfService;
 use App\Services\FinancialReportService;
+use App\Support\CurrentCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -39,21 +40,18 @@ class MonthlyReportController extends Controller
         // Se existe relatório, pegar os daily points dele
         if ($report) {
             $dailyPoints = $report->dailyPoints;
-            $tasks = $report->user->tasks()
-                ->with('pullRequests')
+            $tasks = CurrentCompany::tasksQuery()
                 ->whereYear('work_date', $date->year)
                 ->whereMonth('work_date', $date->month)
                 ->orderBy('work_date')
                 ->get();
         } else {
-            // Se não existe, buscar dados brutos para preview
             $dailyPoints = auth()->user()->dailyPoints()
                 ->whereYear('work_date', $date->year)
                 ->whereMonth('work_date', $date->month)
                 ->orderBy('work_date')
                 ->get();
-            $tasks = auth()->user()->tasks()
-                ->with('pullRequests')
+            $tasks = CurrentCompany::tasksQuery()
                 ->whereYear('work_date', $date->year)
                 ->whereMonth('work_date', $date->month)
                 ->orderBy('work_date')
@@ -103,32 +101,40 @@ class MonthlyReportController extends Controller
         }
     }
 
+    public function approvals(Request $request)
+    {
+        abort_unless(CurrentCompany::canApproveReports(), 403);
+
+        $company = CurrentCompany::get();
+        $memberIds = $company->users()->pluck('users.id');
+
+        $reports = MonthlyReport::with('user')
+            ->whereIn('user_id', $memberIds)
+            ->orderByDesc('reference_month')
+            ->paginate(20);
+
+        return view('monthly-reports.approvals', compact('reports'));
+    }
+
     public function show(MonthlyReport $monthlyReport)
     {
-        if ($monthlyReport->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('view', $monthlyReport);
 
-        // Redirecionar para o index com o mês correto
         return redirect()->route('relatorios-mensais.index', [
-            'month' => $monthlyReport->reference_month->format('Y-m')
+            'month' => $monthlyReport->reference_month->format('Y-m'),
         ]);
     }
 
     public function pdf(MonthlyReport $monthlyReport)
     {
-        if ($monthlyReport->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('view', $monthlyReport);
 
         return $this->pdfService->generateMonthlyReport($monthlyReport);
     }
 
     public function hoursMirror(MonthlyReport $monthlyReport)
     {
-        if ($monthlyReport->user_id !== auth()->id()) {
-            abort(403);
-        }
+        $this->authorize('view', $monthlyReport);
 
         return $this->pdfService->generateHoursMirror($monthlyReport);
     }

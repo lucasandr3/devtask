@@ -1,15 +1,10 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('notas-fiscais.index') }}" class="p-2 bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Nova Nota Fiscal</h2>
-        </div>
+        <h2 class="page-title">Nova Nota Fiscal</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('notas-fiscais.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -51,8 +46,8 @@
                 </div>
 
                 {{-- Campos MEI --}}
-                <div class="pt-4 border-t border-gray-200 dark:border-slate-700">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Informações de Impostos MEI</h3>
+                <div class="pt-4 border-t border-border">
+                    <h3 class="text-lg font-semibold mb-4 text-foreground">Informações de Impostos MEI</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -89,11 +84,11 @@
                 <div>
                     <x-input-label for="arquivo" value="Arquivo PDF (opcional)" />
                     <x-text-input type="file" name="arquivo" id="arquivo" accept=".pdf" class="mt-1" />
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Apenas arquivos PDF. Tamanho máximo: 10MB</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Apenas arquivos PDF. Tamanho máximo: 10MB</p>
                     <x-input-error :messages="$errors->get('arquivo')" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('notas-fiscais.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

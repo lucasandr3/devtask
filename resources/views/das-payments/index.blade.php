@@ -11,16 +11,14 @@ use Illuminate\Support\Facades\Storage;
         :createRoute="route('das.create')"
         createLabel="Novo DAS"
         searchPlaceholder="Pesquisar DAS..."
-        :selectable="true"
+        :selectable="false"
         tableId="dasPaymentsTable"
     >
         {{-- Filtros Avançados --}}
         <x-slot name="actions">
-            <button type="button" onclick="document.getElementById('filtrosAvancados').classList.toggle('hidden')" class="btn-secondary btn-responsive" title="Filtros">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-                </svg>
-                <span class="btn-text">Filtros</span>
+            <button type="button" onclick="document.getElementById('filtrosAvancados').classList.toggle('hidden')" class="btn-secondary h-9 px-3 shrink-0 ui-tooltip ui-tooltip-top" data-tooltip="Filtros avançados" aria-label="Filtros avançados">
+                <x-ui.icon name="sliders" />
+                <span class="hidden sm:inline">Filtros</span>
             </button>
         </x-slot>
 
@@ -34,8 +32,8 @@ use Illuminate\Support\Facades\Storage;
         </x-slot>
 
         @forelse($dasPayments as $das)
-            <x-data-table.row :selectable="true">
-                <x-data-table.cell class="font-medium text-gray-900 dark:text-white">
+            <x-data-table.row>
+                <x-data-table.cell class="font-medium text-foreground">
                     {{ $das->reference_month_formatted }}
                 </x-data-table.cell>
                 <x-data-table.cell>
@@ -60,8 +58,8 @@ use Illuminate\Support\Facades\Storage;
                     deleteConfirm="Tem certeza que deseja excluir este DAS?"
                 >
                     @if($das->receipt_file)
-                        <a href="{{ Storage::url('public/' . $das->receipt_file) }}" target="_blank" class="action-btn view" title="Ver Comprovante">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <a href="{{ Storage::url('public/' . $das->receipt_file) }}" target="_blank" class="action-btn view ui-tooltip ui-tooltip-top" data-tooltip="Ver comprovante" aria-label="Ver comprovante">
+                            <svg class="shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                             </svg>
@@ -95,8 +93,8 @@ use Illuminate\Support\Facades\Storage;
     <div id="filtrosAvancados" class="hidden fixed inset-0 z-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen px-4">
             <div class="fixed inset-0 bg-black/50 transition-opacity" onclick="document.getElementById('filtrosAvancados').classList.add('hidden')"></div>
-            <div class="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Filtros Avançados</h3>
+            <div class="relative bg-white bg-card rounded-lg shadow-xl max-w-md w-full p-6">
+                <h3 class="text-lg font-semibold text-foreground mb-4">Filtros Avançados</h3>
                 <form method="GET" action="{{ route('das.index') }}" class="space-y-4">
                     <div>
                         <x-input-label for="month" value="Mês" />

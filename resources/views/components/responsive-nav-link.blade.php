@@ -2,10 +2,10 @@
 
 @php
 $classes = ($active ?? false)
-            ? 'flex items-center w-full px-4 py-3 text-base font-medium rounded-lg bg-primary-50 dark:bg-slate-700 text-primary-700 dark:text-primary-300 transition-all duration-200'
-            : 'flex items-center w-full px-4 py-3 text-base font-medium rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white transition-all duration-200';
+            ? 'bg-accent text-accent-foreground border-l-2 border-primary'
+            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground border-l-2 border-transparent';
 @endphp
 
-<a {{ $attributes->merge(['class' => $classes]) }}>
+<a {{ $attributes->merge(['class' => 'block w-full ps-3 pe-4 py-2 text-start text-sm font-medium transition-colors '.$classes]) }}>
     {{ $slot }}
 </a>

@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 class="text-lg font-semibold text-foreground">
             Informações do Perfil
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p class="mt-1 text-sm text-muted-foreground">
             Atualize as informações do seu perfil e endereço de e-mail.
         </p>
     </header>
@@ -19,21 +19,21 @@
 
         <div>
             <x-input-label for="name" value="Nome" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" placeholder="Seu nome completo" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         <div>
             <x-input-label for="email" value="E-mail" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" placeholder="seu@email.com" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
                 <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
+                    <p class="text-sm mt-2 text-foreground dark:text-gray-200">
                         Seu endereço de e-mail não foi verificado.
 
-                        <button form="send-verification" class="underline text-sm text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <button form="send-verification" class="underline text-sm text-primary hover:text-primary/80 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
                             Clique aqui para reenviar o e-mail de verificação.
                         </button>
                     </p>
@@ -47,8 +47,8 @@
             @endif
         </div>
 
-        <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
-            <h3 class="text-md font-medium text-gray-900 dark:text-white mb-4">Dados da Empresa (para relatórios)</h3>
+        <div class="border-t border-border border-border pt-6 mt-6">
+            <h3 class="text-md font-medium text-foreground mb-4">Dados da Empresa (para relatórios)</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

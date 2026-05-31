@@ -1,20 +1,20 @@
 /**
- * DevTask Theme Manager
+ * GestorPro Theme Manager
  * Handles color themes and dark mode switching
  */
 
 const ThemeManager = {
     themes: [
-        { id: 'blue', name: 'Ocean Blue', color: '#3b82f6' },
-        { id: 'indigo', name: 'Indigo Night', color: '#6366f1' },
-        { id: 'emerald', name: 'Emerald Fresh', color: '#10b981' },
-        { id: 'rose', name: 'Rose Elegant', color: '#f43f5e' },
-        { id: 'amber', name: 'Amber Warm', color: '#f59e0b' },
-        { id: 'violet', name: 'Violet Dream', color: '#8b5cf6' },
-        { id: 'teal', name: 'Teal Ocean', color: '#14b8a6' },
-        { id: 'slate', name: 'Slate Pro', color: '#64748b' },
-        { id: 'cyan', name: 'Cyan Tech', color: '#06b6d4' },
-        { id: 'fuchsia', name: 'Fuchsia Bold', color: '#d946ef' },
+        { id: 'blue', name: 'Azul Oceano', color: '#3b82f6' },
+        { id: 'indigo', name: 'Índigo Noturno', color: '#6366f1' },
+        { id: 'emerald', name: 'Esmeralda', color: '#10b981' },
+        { id: 'rose', name: 'Rosa Elegante', color: '#f43f5e' },
+        { id: 'amber', name: 'Âmbar Quente', color: '#f59e0b' },
+        { id: 'violet', name: 'Violeta', color: '#8b5cf6' },
+        { id: 'teal', name: 'Verde-azulado', color: '#14b8a6' },
+        { id: 'slate', name: 'Ardósia', color: '#64748b' },
+        { id: 'cyan', name: 'Ciano', color: '#06b6d4' },
+        { id: 'fuchsia', name: 'Fúcsia', color: '#d946ef' },
     ],
 
     init() {
@@ -44,7 +44,7 @@ const ThemeManager = {
      * Get current theme ID
      */
     getCurrentTheme() {
-        return localStorage.getItem('devtask-theme') || 'blue';
+        return localStorage.getItem('gestorpro-theme') || 'blue';
     },
 
     /**
@@ -64,7 +64,7 @@ const ThemeManager = {
             document.documentElement.setAttribute('data-theme', themeId);
         }
         
-        localStorage.setItem('devtask-theme', themeId);
+        localStorage.setItem('gestorpro-theme', themeId);
         
         // Dispatch custom event for reactivity
         window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: themeId } }));
@@ -79,10 +79,42 @@ const ThemeManager = {
     },
 
     /**
+     * Get theme mode: light, dark, or system
+     */
+    getMode() {
+        const saved = localStorage.getItem('gestorpro-mode');
+        if (saved) {
+            return saved;
+        }
+        const darkMode = localStorage.getItem('gestorpro-dark-mode');
+        if (darkMode === 'true') return 'dark';
+        if (darkMode === 'false') return 'light';
+        return 'system';
+    },
+
+    /**
+     * Set theme mode
+     */
+    setMode(mode) {
+        localStorage.setItem('gestorpro-mode', mode);
+
+        if (mode === 'light') {
+            this.disableDarkMode();
+        } else if (mode === 'dark') {
+            this.enableDarkMode();
+        } else {
+            localStorage.removeItem('gestorpro-dark-mode');
+            this.loadDarkMode();
+        }
+
+        window.dispatchEvent(new CustomEvent('theme-mode-changed', { detail: { mode } }));
+    },
+
+    /**
      * Check if dark mode is enabled
      */
     isDarkMode() {
-        const saved = localStorage.getItem('devtask-dark-mode');
+        const saved = localStorage.getItem('gestorpro-dark-mode');
         if (saved !== null) {
             return saved === 'true';
         }
@@ -95,7 +127,7 @@ const ThemeManager = {
      */
     enableDarkMode() {
         document.documentElement.classList.add('dark');
-        localStorage.setItem('devtask-dark-mode', 'true');
+        localStorage.setItem('gestorpro-dark-mode', 'true');
         window.dispatchEvent(new CustomEvent('dark-mode-changed', { detail: { darkMode: true } }));
     },
 
@@ -104,7 +136,7 @@ const ThemeManager = {
      */
     disableDarkMode() {
         document.documentElement.classList.remove('dark');
-        localStorage.setItem('devtask-dark-mode', 'false');
+        localStorage.setItem('gestorpro-dark-mode', 'false');
         window.dispatchEvent(new CustomEvent('dark-mode-changed', { detail: { darkMode: false } }));
     },
 
@@ -137,7 +169,7 @@ const ThemeManager = {
         const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
         mediaQuery.addEventListener('change', (e) => {
             // Only apply if user hasn't set a preference
-            if (localStorage.getItem('devtask-dark-mode') === null) {
+            if (localStorage.getItem('gestorpro-dark-mode') === null) {
                 if (e.matches) {
                     this.enableDarkMode();
                 } else {
@@ -151,7 +183,7 @@ const ThemeManager = {
      * Reset to system preference
      */
     resetToSystemPreference() {
-        localStorage.removeItem('devtask-dark-mode');
+        localStorage.removeItem('gestorpro-dark-mode');
         this.loadDarkMode();
     }
 };

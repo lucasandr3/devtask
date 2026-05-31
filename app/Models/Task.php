@@ -15,9 +15,14 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
+        'executor_notes',
+        'internal_notes',
         'status',
         'work_date',
         'user_id',
+        'project_id',
+        'assigned_to',
+        'created_by',
     ];
 
     protected function casts(): array
@@ -33,25 +38,67 @@ class Task extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function assignee(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function timeEntries(): HasMany
+    {
+        return $this->hasMany(TimeEntry::class);
+    }
+
     public function pullRequests(): HasMany
     {
         return $this->hasMany(PullRequest::class);
     }
 
-    /**
-     * Resolve o modelo para route model binding, garantindo que apenas tarefas
-     * do usuário autenticado sejam encontradas.
-     */
+    public function totalTrackedMinutes(): int
+    {
+        return (int) $this->timeEntries()
+            ->whereNotNull('ended_at')
+            ->sum('duration_minutes');
+    }
+
+    public function runningTimeEntryFor(?int $userId = null): ?TimeEntry
+    {
+        $userId ??= auth()->id();
+
+        return $this->timeEntries()
+            ->where('user_id', $userId)
+            ->whereNull('ended_at')
+            ->first();
+    }
+
+    public function isAssignedToCurrentUser(): bool
+    {
+        return $this->assigned_to === auth()->id();
+    }
+
     public function resolveRouteBinding($value, $field = null)
     {
-        $userId = auth()->check() ? auth()->id() : null;
-        
-        if (!$userId) {
+        $companyId = auth()->user()?->current_company_id;
+
+        if (!$companyId) {
             abort(404);
         }
 
         return $this->where($field ?? $this->getRouteKeyName(), $value)
-            ->where('user_id', $userId)
+            ->whereHas('project', fn ($query) => $query->where('company_id', $companyId))
+            ->when(
+                \App\Support\CurrentCompany::isMember(),
+                fn ($query) => $query->where('assigned_to', auth()->id())
+            )
             ->firstOrFail();
     }
 }

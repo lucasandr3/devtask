@@ -1,14 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('notas-fiscais.index') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Editar Nota Fiscal</h2>
-        </div>
+        <h2 class="page-title">Editar Nota Fiscal</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('notas-fiscais.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -51,8 +46,8 @@
                 </div>
 
                 {{-- Campos MEI --}}
-                <div class="pt-4 border-t border-gray-200 dark:border-slate-700">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Informações de Impostos MEI</h3>
+                <div class="pt-4 border-t border-border">
+                    <h3 class="text-lg font-semibold mb-4 text-foreground">Informações de Impostos MEI</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -89,32 +84,32 @@
                 <div>
                     <x-input-label for="arquivo" value="Arquivo PDF (opcional)" />
                     @if($invoice->arquivo)
-                        <div class="mt-2 mb-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
+                        <div class="mt-2 mb-3 p-3 bg-muted/50 rounded-lg">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                                     </svg>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">Arquivo atual: {{ basename($invoice->arquivo) }}</span>
+                                    <span class="text-sm text-foreground">Arquivo atual: {{ basename($invoice->arquivo) }}</span>
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <a href="{{ route('notas-fiscais.visualizar', $invoice) }}" target="_blank" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 text-sm">
                                         Visualizar
                                     </a>
-                                    <a href="{{ route('notas-fiscais.download', $invoice) }}" class="text-primary-600 dark:text-primary-400 hover:text-primary-800 text-sm">
+                                    <a href="{{ route('notas-fiscais.download', $invoice) }}" class="text-primary hover:text-primary-800 text-sm">
                                         Baixar
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Envie um novo arquivo para substituir o atual</p>
+                        <p class="text-sm text-muted-foreground mb-2">Envie um novo arquivo para substituir o atual</p>
                     @endif
                     <x-text-input type="file" name="arquivo" id="arquivo" accept=".pdf" class="mt-1" />
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Apenas arquivos PDF. Tamanho máximo: 10MB</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Apenas arquivos PDF. Tamanho máximo: 10MB</p>
                     <x-input-error :messages="$errors->get('arquivo')" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('notas-fiscais.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

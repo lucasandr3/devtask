@@ -15,49 +15,52 @@
     'tableId' => 'dataTable',
 ])
 
+@php
+$hasToolbarTop = (isset($toolbarLeading) && !$toolbarLeading->isEmpty()) || (isset($toolbarTrailing) && !$toolbarTrailing->isEmpty());
+$hasFilters = count($filters) > 0;
+@endphp
+
 <div class="data-table-wrapper">
-    {{-- Controls: Search + Filters + Create Button --}}
-    <div class="data-table-controls">
-        <div class="data-table-search">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <input 
-                type="text" 
-                placeholder="{{ $searchPlaceholder }}" 
-                id="{{ $tableId }}Search"
-                class="data-table-search-input"
-                data-table-id="{{ $tableId }}"
-            >
-        </div>
-        
-        <div class="data-table-actions">
-            @if(count($filters) > 0)
-                <div class="data-table-filters">
-                    @foreach($filters as $key => $label)
-                        <a 
-                            href="{{ request()->fullUrlWithQuery([$filterParam => $key === 'todos' ? null : $key]) }}"
-                            class="filter-btn {{ (request($filterParam, 'todos') === $key || (request($filterParam) === null && $key === 'todos')) ? 'active' : '' }}"
-                        >
-                            {{ $label }}
+    <x-ui.page-toolbar>
+        @if($hasToolbarTop)
+            <x-slot:leading>{{ $toolbarLeading ?? '' }}</x-slot:leading>
+            <x-slot:trailing>{{ $toolbarTrailing ?? '' }}</x-slot:trailing>
+        @endif
+
+        <x-slot:bottom>
+            <div class="page-toolbar-bottom-inner">
+                <x-ui.search-input
+                    :placeholder="$searchPlaceholder"
+                    :table-id="$tableId"
+                    class="w-full sm:max-w-xs"
+                />
+
+                <div class="page-toolbar-bottom-actions">
+                    @if($hasFilters)
+                        <div class="filter-tabs">
+                            @foreach($filters as $key => $label)
+                                <a
+                                    href="{{ request()->fullUrlWithQuery([$filterParam => $key === 'todos' ? null : $key]) }}"
+                                    class="filter-tab {{ (request($filterParam, 'todos') === $key || (request($filterParam) === null && $key === 'todos')) ? 'filter-tab-active' : '' }}"
+                                >
+                                    {{ $label }}
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{ $actions ?? '' }}
+
+                    @if($createRoute && !$hasToolbarTop)
+                        <a href="{{ $createRoute }}" class="btn-primary h-9 px-3 shrink-0 ui-tooltip ui-tooltip-top" data-tooltip="{{ $createLabel }}" aria-label="{{ $createLabel }}">
+                            <x-ui.icon name="plus" />
+                            <span class="hidden sm:inline">{{ $createLabel }}</span>
                         </a>
-                    @endforeach
+                    @endif
                 </div>
-            @endif
-
-            @if($createRoute)
-                <a href="{{ $createRoute }}" class="btn-primary btn-responsive" title="{{ $createLabel }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    <span class="btn-text">{{ $createLabel }}</span>
-                </a>
-            @endif
-
-            {{ $actions ?? '' }}
-        </div>
-    </div>
+            </div>
+        </x-slot:bottom>
+    </x-ui.page-toolbar>
 
     {{-- Table Card --}}
     <div class="card data-table-card">
@@ -79,7 +82,6 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
         @if(isset($pagination) && trim($pagination) !== '')
             <div class="data-table-pagination">
                 {{ $pagination }}
@@ -98,17 +100,16 @@ function toggleSelectAll(checkbox, tableId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Search functionality for all data tables
     document.querySelectorAll('[data-table-id]').forEach(function(searchInput) {
         searchInput.addEventListener('input', function(e) {
             const tableId = this.getAttribute('data-table-id');
             const searchTerm = e.target.value.toLowerCase();
             const tableBody = document.getElementById(tableId + 'Body');
-            
+
             if (!tableBody) return;
-            
+
             const rows = tableBody.querySelectorAll('tr');
-            
+
             rows.forEach(function(row) {
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(searchTerm) ? '' : 'none';

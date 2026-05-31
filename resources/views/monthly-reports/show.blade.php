@@ -1,43 +1,38 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('relatorios-mensais.index') }}" class="p-2 hover:bg-gray-100 dark:hover:bg-slate-700 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <div>
-                <h2 class="page-title">Relatório Mensal</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400">
-                    {{ $monthlyReport->reference_month->format('m/Y') }}
-                </p>
-            </div>
+        <div>
+            <h2 class="page-title">Relatório Mensal</h2>
+            <p class="text-sm text-muted-foreground">
+                {{ $monthlyReport->reference_month->format('m/Y') }}
+            </p>
         </div>
     </x-slot>
+
+    <x-ui.page-back :href="route('relatorios-mensais.index')" class="mb-6" />
 
     <div class="space-y-6">
         <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div class="card p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Resumo</h2>
+                <h2 class="text-xl font-semibold mb-4 text-foreground">Resumo</h2>
                 <dl class="space-y-3">
                     <div class="flex justify-between items-center">
-                        <dt class="text-gray-600 dark:text-gray-400">Horas Contratadas:</dt>
-                        <dd class="font-medium text-gray-900 dark:text-white">{{ $monthlyReport->contract_hours_formatted }}</dd>
+                        <dt class="text-muted-foreground">Horas Contratadas:</dt>
+                        <dd class="font-medium text-foreground">{{ $monthlyReport->contract_hours_formatted }}</dd>
                     </div>
                     <div class="flex justify-between items-center">
-                        <dt class="text-gray-600 dark:text-gray-400">Horas Normais:</dt>
-                        <dd class="font-medium text-gray-900 dark:text-white">{{ $monthlyReport->normal_hours_formatted }}</dd>
+                        <dt class="text-muted-foreground">Horas Normais:</dt>
+                        <dd class="font-medium text-foreground">{{ $monthlyReport->normal_hours_formatted }}</dd>
                     </div>
                     <div class="flex justify-between items-center">
-                        <dt class="text-gray-600 dark:text-gray-400">Horas Extras:</dt>
-                        <dd class="font-medium text-gray-900 dark:text-white">{{ $monthlyReport->extra_hours_formatted }}</dd>
+                        <dt class="text-muted-foreground">Horas Extras:</dt>
+                        <dd class="font-medium text-foreground">{{ $monthlyReport->extra_hours_formatted }}</dd>
                     </div>
-                    <div class="flex justify-between items-center border-t border-gray-200 dark:border-slate-700 pt-3 mt-3">
-                        <dt class="font-semibold text-gray-900 dark:text-white">Total:</dt>
-                        <dd class="font-bold text-lg text-gray-900 dark:text-white">{{ $monthlyReport->total_hours_formatted }}</dd>
+                    <div class="flex justify-between items-center border-t border-border pt-3 mt-3">
+                        <dt class="font-semibold text-foreground">Total:</dt>
+                        <dd class="font-bold text-lg text-foreground">{{ $monthlyReport->total_hours_formatted }}</dd>
                     </div>
                     <div class="flex justify-between items-center">
-                        <dt class="text-gray-600 dark:text-gray-400">Saldo:</dt>
+                        <dt class="text-muted-foreground">Saldo:</dt>
                         <dd class="font-medium {{ $monthlyReport->balance_minutes >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                             {{ $monthlyReport->balance_hours_formatted }}
                         </dd>
@@ -46,24 +41,24 @@
             </div>
 
             <div class="card p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Status</h2>
+                <h2 class="text-xl font-semibold mb-4 text-foreground">Status</h2>
                 <div class="space-y-3">
                     <div>
                         <x-status-badge :status="$monthlyReport->status->label()" :color="$monthlyReport->status->color()" />
                     </div>
                     @if($monthlyReport->approver_name)
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Aprovado por: <strong class="text-gray-900 dark:text-white">{{ $monthlyReport->approver_name }}</strong>
+                        <p class="text-sm text-muted-foreground">
+                            Aprovado por: <strong class="text-foreground">{{ $monthlyReport->approver_name }}</strong>
                         </p>
                     @endif
                     @if($monthlyReport->notes)
-                        <p class="text-sm text-gray-600 dark:text-gray-400">
-                            Observações: <span class="text-gray-900 dark:text-white">{{ $monthlyReport->notes }}</span>
+                        <p class="text-sm text-muted-foreground">
+                            Observações: <span class="text-foreground">{{ $monthlyReport->notes }}</span>
                         </p>
                     @endif
                 </div>
 
-                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-slate-700 flex flex-col gap-3">
+                <div class="mt-6 pt-6 border-t border-border flex flex-col gap-3">
                     <a href="{{ route('relatorios-mensais.pdf', $monthlyReport) }}" target="_blank" class="btn-primary text-center">
                         <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -91,7 +86,7 @@
                 </div>
 
                 @if($monthlyReport->status->value === 'sent')
-                    <div class="mt-6 space-y-3 pt-6 border-t border-gray-200 dark:border-slate-700">
+                    <div class="mt-6 space-y-3 pt-6 border-t border-border">
                         <form method="POST" action="{{ route('relatorios-mensais.aprovar', $monthlyReport->id) }}" class="space-y-3">
                             @csrf
                             @method('PUT')
@@ -121,45 +116,45 @@
 
         {{-- Relatório Financeiro --}}
         <div class="card p-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Relatório Financeiro</h2>
+            <h2 class="text-xl font-semibold mb-4 text-foreground">Relatório Financeiro</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Receitas</h3>
+                    <h3 class="text-lg font-semibold mb-3 text-foreground">Receitas</h3>
                     <dl class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <dt class="text-gray-600 dark:text-gray-400">Total de Receitas:</dt>
+                            <dt class="text-muted-foreground">Total de Receitas:</dt>
                             <dd class="font-medium text-green-600 dark:text-green-400">{{ $financialData['formatted_total_revenue'] }}</dd>
                         </div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <div class="text-sm text-muted-foreground">
                             {{ $financialData['invoices']->count() }} nota(s) fiscal(is) emitida(s)
                         </div>
                     </dl>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold mb-3 text-gray-900 dark:text-white">Despesas</h3>
+                    <h3 class="text-lg font-semibold mb-3 text-foreground">Despesas</h3>
                     <dl class="space-y-2">
                         <div class="flex justify-between items-center">
-                            <dt class="text-gray-600 dark:text-gray-400">DAS Pago:</dt>
+                            <dt class="text-muted-foreground">DAS Pago:</dt>
                             <dd class="font-medium text-red-600 dark:text-red-400">{{ $financialData['formatted_total_das_paid'] }}</dd>
                         </div>
                         @if($financialData['total_das_pending'] > 0)
                             <div class="flex justify-between items-center">
-                                <dt class="text-gray-600 dark:text-gray-400">DAS Pendente:</dt>
+                                <dt class="text-muted-foreground">DAS Pendente:</dt>
                                 <dd class="font-medium text-yellow-600 dark:text-yellow-400">{{ $financialData['formatted_total_das_pending'] }}</dd>
                             </div>
                         @endif
                         @if($financialData['total_das_overdue'] > 0)
                             <div class="flex justify-between items-center">
-                                <dt class="text-gray-600 dark:text-gray-400">DAS Vencido:</dt>
+                                <dt class="text-muted-foreground">DAS Vencido:</dt>
                                 <dd class="font-medium text-red-600 dark:text-red-400">{{ $financialData['formatted_total_das_overdue'] }}</dd>
                             </div>
                         @endif
                     </dl>
                 </div>
             </div>
-            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-slate-700">
+            <div class="mt-6 pt-6 border-t border-border">
                 <div class="flex justify-between items-center">
-                    <dt class="text-lg font-semibold text-gray-900 dark:text-white">Saldo Financeiro:</dt>
+                    <dt class="text-lg font-semibold text-foreground">Saldo Financeiro:</dt>
                     <dd class="text-xl font-bold {{ $financialData['balance'] >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
                         {{ $financialData['formatted_balance'] }}
                     </dd>
@@ -168,25 +163,25 @@
         </div>
 
         <div class="card overflow-hidden">
-            <div class="p-6 border-b border-gray-200 dark:border-slate-700">
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Espelho de Horas</h2>
+            <div class="p-6 border-b border-border">
+                <h2 class="text-xl font-semibold text-foreground">Espelho de Horas</h2>
             </div>
-            <div class="overflow-x-auto">
+            <div>
                 <table class="table">
                     <thead class="table-header">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Data</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Data</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Total</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
                         </tr>
                     </thead>
                     <tbody class="table-body">
                         @forelse($dailyPoints as $point)
                             <tr class="table-row">
-                                <td class="table-cell whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                                <td class="table-cell whitespace-nowrap font-medium text-foreground">
                                     {{ $point->work_date->format('d/m/Y') }}
                                 </td>
-                                <td class="table-cell whitespace-nowrap text-gray-900 dark:text-white">
+                                <td class="table-cell whitespace-nowrap text-foreground">
                                     {{ $point->total_hours_formatted }}
                                 </td>
                                 <td class="table-cell whitespace-nowrap">
@@ -197,10 +192,10 @@
                             <tr>
                                 <td colspan="3" class="px-6 py-12 text-center">
                                     <div class="flex flex-col items-center">
-                                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-12 h-12 text-gray-300 dark:text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                         </svg>
-                                        <p class="text-gray-500 dark:text-gray-400">Nenhuma hora registrada</p>
+                                        <p class="text-muted-foreground">Nenhuma hora registrada</p>
                                     </div>
                                 </td>
                             </tr>

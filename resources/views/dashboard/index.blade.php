@@ -1,17 +1,29 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col justify-between">
-            <h2 class="page-title">
-                Dashboard
-            </h2>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{{ $currentMonth }}</span>
-        </div>
+        <h2 class="page-title">Painel</h2>
     </x-slot>
 
     <div class="space-y-8">
-        <!-- Stats Grid -->
+        <p class="text-sm text-muted-foreground -mt-4">
+            {{ $company?->name ?? 'Empresa' }} · {{ $currentMonth }}
+        </p>
         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            <!-- Total Hours -->
+            <div class="stat-card group">
+                <div class="flex items-center">
+                    <div class="stat-card-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-muted-foreground truncate">Projetos Ativos</dt>
+                            <dd class="text-2xl font-bold tracking-tight">{{ $activeProjects }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
             <div class="stat-card group">
                 <div class="flex items-center">
                     <div class="stat-card-icon">
@@ -21,48 +33,29 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Total de Horas</dt>
-                            <dd class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalHours }}</dd>
+                            <dt class="text-sm font-medium text-muted-foreground truncate">Horas no Ponto</dt>
+                            <dd class="text-2xl font-bold tracking-tight">{{ $punchHours }}</dd>
                         </dl>
                     </div>
                 </div>
             </div>
 
-            <!-- Normal Hours -->
             <div class="stat-card group">
                 <div class="flex items-center">
                     <div class="stat-card-icon">
                         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                         </svg>
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Horas Normais</dt>
-                            <dd class="text-2xl font-bold text-gray-900 dark:text-white">{{ $normalHours }}</dd>
+                            <dt class="text-sm font-medium text-muted-foreground truncate">{{ $isMember ? 'Minhas Tarefas' : 'Horas em Tarefas' }}</dt>
+                            <dd class="text-2xl font-bold tracking-tight">{{ $isMember ? $tasksInProgress : $trackedHours }}</dd>
                         </dl>
                     </div>
                 </div>
             </div>
 
-            <!-- Extra Hours -->
-            <div class="stat-card group">
-                <div class="flex items-center">
-                    <div class="stat-card-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Horas Extras</dt>
-                            <dd class="text-2xl font-bold text-gray-900 dark:text-white">{{ $extraHours }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tasks Done -->
             <div class="stat-card group">
                 <div class="flex items-center">
                     <div class="stat-card-icon">
@@ -72,55 +65,53 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">Tarefas Concluídas</dt>
-                            <dd class="text-2xl font-bold text-gray-900 dark:text-white">{{ $tasksDone }}</dd>
+                            <dt class="text-sm font-medium text-muted-foreground truncate">Concluídas no Mês</dt>
+                            <dd class="text-2xl font-bold tracking-tight">{{ $tasksDone }}</dd>
                         </dl>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Points Table -->
         <div class="card overflow-hidden">
-            <div class="px-6 py-5 border-b border-gray-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Últimas Horas Registradas
-                </h3>
+            <div class="px-6 py-5 border-b border-border flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-foreground">Projetos Recentes</h3>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('projetos.index') }}" class="text-sm text-primary hover:underline">Ver todos</a>
+                    @if(\App\Support\CurrentCompany::canViewCompanyReports())
+                        <a href="{{ route('relatorios.horas-empresa') }}" class="text-sm text-primary hover:underline">Horas da empresa</a>
+                    @endif
+                </div>
             </div>
-            <div class="overflow-x-auto">
+            <div>
                 <table class="table">
                     <thead class="table-header">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Data</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Total</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase">Projeto</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase">Status</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold uppercase">Tarefas</th>
                         </tr>
                     </thead>
                     <tbody class="table-body">
-                        @forelse($recentPoints as $point)
+                        @forelse($recentProjects as $project)
                             <tr class="table-row">
-                                <td class="table-cell whitespace-nowrap font-medium">
-                                    {{ $point->work_date->format('d/m/Y') }}
+                                <td class="table-cell">
+                                    <a href="{{ route('projetos.show', $project) }}" class="font-medium text-primary hover:underline">
+                                        {{ $project->name }}
+                                    </a>
                                 </td>
-                                <td class="table-cell whitespace-nowrap">
-                                    <span class="font-semibold text-primary-600 dark:text-primary-400">{{ $point->total_hours_formatted }}</span>
+                                <td class="table-cell">
+                                    <x-status-badge :status="$project->status->label()" color="blue" />
                                 </td>
-                                <td class="table-cell whitespace-nowrap">
-                                    <x-status-badge :status="$point->status->label()" :color="$point->status->color()" />
-                                </td>
+                                <td class="table-cell">{{ $project->tasks_count }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="3" class="px-6 py-12 text-center">
-                                    <div class="flex flex-col items-center">
-                                        <svg class="w-12 h-12 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        <p class="text-gray-500 dark:text-gray-400">Nenhuma hora registrada ainda</p>
-                                    </div>
+                                <td colspan="3" class="px-6 py-12 text-center text-muted-foreground">
+                                    Nenhum projeto cadastrado.
+                                    @if(\App\Support\CurrentCompany::canManageProjects())
+                                        <a href="{{ route('projetos.create') }}" class="link-primary">Criar primeiro projeto</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforelse

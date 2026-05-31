@@ -23,61 +23,38 @@
     </script>
 
     {{-- View Toggle + Create Button --}}
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
-        <div class="flex items-center gap-2 p-1 rounded-lg bg-gray-100 dark:bg-neutral-800">
-            <a href="{{ route('tarefas.index', ['view' => 'table']) }}" 
-               onclick="saveViewPreference('table')"
-               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ $view === 'table' ? 'bg-white dark:bg-neutral-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }}"
-               title="Visualização em Tabela">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
-                </svg>
-                <span class="hidden sm:inline">Tabela</span>
-            </a>
-            <a href="{{ route('tarefas.index', ['view' => 'kanban']) }}" 
-               onclick="saveViewPreference('kanban')"
-               class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 {{ $view === 'kanban' ? 'bg-white dark:bg-neutral-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white' }}"
-               title="Visualização Kanban">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
-                </svg>
-                <span class="hidden sm:inline">Kanban</span>
-            </a>
-        </div>
-        
-        <a href="{{ route('tarefas.create') }}" class="btn-primary btn-responsive" title="Nova Tarefa">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            <span class="btn-text">Nova Tarefa</span>
-        </a>
-    </div>
+    @if($view === 'kanban')
+        <x-ui.page-toolbar class="mb-4">
+            <x-slot:leading>@include('tasks.partials.toolbar')</x-slot:leading>
+            <x-slot:trailing>@include('tasks.partials.toolbar-actions')</x-slot:trailing>
+        </x-ui.page-toolbar>
+    @endif
 
     @if($view === 'kanban')
         {{-- Kanban View --}}
         <div class="kanban-board grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             {{-- Coluna A Fazer --}}
             <div class="kanban-column">
-                <div class="kanban-column-header bg-gray-100 dark:bg-neutral-800 rounded-t-lg px-4 py-3 border-b-2 border-gray-400">
+                <div class="kanban-column-header bg-muted rounded-t-lg px-4 py-3 border-b-2 border-gray-400">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-3 h-3 rounded-full bg-gray-400"></span>
-                            <h3 class="font-semibold text-gray-700 dark:text-gray-300">A Fazer</h3>
+                            <h3 class="font-semibold text-foreground">A Fazer</h3>
                         </div>
-                        <span class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-neutral-700 px-2 py-1 rounded-full">
+                        <span class="text-xs font-medium text-muted-foreground bg-gray-200 bg-secondary px-2 py-1 rounded-full">
                             {{ $tasksByStatus['todo']->count() }}
                         </span>
                     </div>
                 </div>
-                <div class="kanban-column-body bg-gray-50 dark:bg-neutral-900 rounded-b-lg p-2 min-h-[400px]" 
+                <div class="kanban-column-body bg-muted/50 dark:bg-neutral-900 rounded-b-lg p-2 min-h-[400px]" 
                      data-status="todo" 
                      ondrop="dropTask(event)" 
                      ondragover="allowDrop(event)"
                      ondragleave="dragLeave(event)">
                     @forelse($tasksByStatus['todo'] as $task)
-                        @include('tasks.partials.kanban-card', ['task' => $task])
+                        @include('tasks.partials.kanban-card', ['task' => $task, 'activeTimerTaskId' => $activeTimerTaskId ?? null])
                     @empty
-                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-gray-600 text-sm">
+                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-muted-foreground text-sm">
                             Nenhuma tarefa
                         </div>
                     @endforelse
@@ -103,9 +80,9 @@
                      ondragover="allowDrop(event)"
                      ondragleave="dragLeave(event)">
                     @forelse($tasksByStatus['doing'] as $task)
-                        @include('tasks.partials.kanban-card', ['task' => $task])
+                        @include('tasks.partials.kanban-card', ['task' => $task, 'activeTimerTaskId' => $activeTimerTaskId ?? null])
                     @empty
-                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-gray-600 text-sm">
+                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-muted-foreground text-sm">
                             Nenhuma tarefa
                         </div>
                     @endforelse
@@ -131,9 +108,9 @@
                      ondragover="allowDrop(event)"
                      ondragleave="dragLeave(event)">
                     @forelse($tasksByStatus['done'] as $task)
-                        @include('tasks.partials.kanban-card', ['task' => $task])
+                        @include('tasks.partials.kanban-card', ['task' => $task, 'activeTimerTaskId' => $activeTimerTaskId ?? null])
                     @empty
-                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-gray-600 text-sm">
+                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-muted-foreground text-sm">
                             Nenhuma tarefa
                         </div>
                     @endforelse
@@ -159,9 +136,9 @@
                      ondragover="allowDrop(event)"
                      ondragleave="dragLeave(event)">
                     @forelse($tasksByStatus['cancelled'] as $task)
-                        @include('tasks.partials.kanban-card', ['task' => $task])
+                        @include('tasks.partials.kanban-card', ['task' => $task, 'activeTimerTaskId' => $activeTimerTaskId ?? null])
                     @empty
-                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-gray-600 text-sm">
+                        <div class="kanban-empty text-center py-8 text-gray-400 dark:text-muted-foreground text-sm">
                             Nenhuma tarefa
                         </div>
                     @endforelse
@@ -170,88 +147,7 @@
         </div>
 
         @push('scripts')
-        <script>
-            function allowDrop(event) {
-                event.preventDefault();
-                event.currentTarget.classList.add('ring-2', 'ring-primary-500', 'ring-opacity-50');
-            }
-
-            function dragLeave(event) {
-                event.currentTarget.classList.remove('ring-2', 'ring-primary-500', 'ring-opacity-50');
-            }
-
-            function dragStart(event) {
-                event.dataTransfer.setData('taskId', event.target.dataset.taskId);
-                event.target.classList.add('opacity-50');
-            }
-
-            function dragEnd(event) {
-                event.target.classList.remove('opacity-50');
-            }
-
-            async function dropTask(event) {
-                event.preventDefault();
-                event.currentTarget.classList.remove('ring-2', 'ring-primary-500', 'ring-opacity-50');
-                
-                const taskId = event.dataTransfer.getData('taskId');
-                const newStatus = event.currentTarget.dataset.status;
-                const taskCard = document.querySelector(`[data-task-id="${taskId}"]`);
-                
-                if (!taskCard) return;
-
-                // Move o card visualmente
-                const emptyMessage = event.currentTarget.querySelector('.kanban-empty');
-                if (emptyMessage) {
-                    emptyMessage.remove();
-                }
-                event.currentTarget.appendChild(taskCard);
-
-                // Atualiza no servidor
-                try {
-                    const response = await fetch(`/tarefas/${taskId}/status`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({ status: newStatus })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Erro ao atualizar status');
-                    }
-
-                    // Atualiza contadores
-                    updateColumnCounts();
-                    
-                } catch (error) {
-                    console.error('Erro:', error);
-                    // Recarrega a página em caso de erro
-                    window.location.reload();
-                }
-            }
-
-            function updateColumnCounts() {
-                document.querySelectorAll('.kanban-column-body').forEach(column => {
-                    const count = column.querySelectorAll('.kanban-card').length;
-                    const header = column.previousElementSibling;
-                    const countBadge = header.querySelector('span:last-child');
-                    if (countBadge) {
-                        countBadge.textContent = count;
-                    }
-                    
-                    // Adiciona mensagem de vazio se necessário
-                    const hasEmpty = column.querySelector('.kanban-empty');
-                    if (count === 0 && !hasEmpty) {
-                        const emptyDiv = document.createElement('div');
-                        emptyDiv.className = 'kanban-empty text-center py-8 text-gray-400 dark:text-gray-600 text-sm';
-                        emptyDiv.textContent = 'Nenhuma tarefa';
-                        column.appendChild(emptyDiv);
-                    }
-                });
-            }
-        </script>
+        @include('tasks.partials.kanban-scripts')
         @endpush
 
     @else
@@ -261,52 +157,38 @@
             searchPlaceholder="Pesquisar tarefas..."
             :filters="['todos' => 'Todos', 'todo' => 'A Fazer', 'doing' => 'Em Progresso', 'done' => 'Concluído', 'cancelled' => 'Cancelada']"
             filterParam="status"
-            :selectable="true"
+            :selectable="false"
             tableId="tarefasTable"
         >
+            <x-slot name="toolbarLeading">@include('tasks.partials.toolbar')</x-slot>
+            <x-slot name="toolbarTrailing">@include('tasks.partials.toolbar-actions')</x-slot>
+
             <x-slot name="head">
                 <x-data-table.header>Título</x-data-table.header>
-                <x-data-table.header>Data</x-data-table.header>
-                <x-data-table.header>Status</x-data-table.header>
-                <x-data-table.header>PRs</x-data-table.header>
-                <x-data-table.header align="right">Ações</x-data-table.header>
+                <x-data-table.header>Projeto</x-data-table.header>
+                <x-data-table.header class="data-table-th-compact">Status</x-data-table.header>
+                <x-data-table.header align="right" class="data-table-th-actions">Ações</x-data-table.header>
             </x-slot>
 
             @forelse($tasks as $task)
-                <x-data-table.row :selectable="true">
-                    <x-data-table.title-cell 
-                        :title="$task->title" 
-                        :subtitle="$task->description" 
-                    />
-                    <x-data-table.cell>
-                        {{ $task->work_date->format('d/m/Y') }}
-                    </x-data-table.cell>
-                    <x-data-table.cell>
+                <x-data-table.row>
+                    <x-data-table.title-cell :title="$task->title" />
+                    <x-data-table.cell truncate>{{ $task->project?->name ?? '-' }}</x-data-table.cell>
+                    <x-data-table.cell class="data-table-td-compact">
                         <x-status-badge :status="$task->status->label()" :color="$task->status->color()" />
                     </x-data-table.cell>
-                    <x-data-table.cell>
-                        @if($task->pull_requests_count > 0)
-                            <span class="inline-flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                </svg>
-                                {{ $task->pull_requests_count }}
-                            </span>
-                        @else
-                            <span class="text-gray-400 dark:text-gray-600">-</span>
-                        @endif
-                    </x-data-table.cell>
                     <x-data-table.actions 
+                        :viewRoute="route('tarefas.show', $task)"
                         :editRoute="route('tarefas.editar', $task)"
-                        :deleteRoute="route('tarefas.destroy', $task)"
+                        :deleteRoute="\App\Support\CurrentCompany::canManageProjects() ? route('tarefas.destroy', $task) : null"
                         deleteConfirm="Tem certeza que deseja excluir esta tarefa?"
                     />
                 </x-data-table.row>
             @empty
                 <x-data-table.empty 
-                    :colspan="5"
+                    :colspan="4"
                     message="Nenhuma tarefa encontrada"
-                    :createRoute="route('tarefas.create')"
+                    :createRoute="\App\Support\CurrentCompany::canManageProjects() ? route('tarefas.create') : null"
                     createLabel="Criar primeira tarefa"
                 >
                     <x-slot name="icon">

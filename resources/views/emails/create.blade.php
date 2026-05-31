@@ -1,14 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('emails.index') }}" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Novo Email</h2>
-        </div>
+        <h2 class="page-title">Novo Email</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('emails.index')" class="mb-6" />
 
     <div class="card">
         <form action="{{ route('emails.store') }}" method="POST" enctype="multipart/form-data" x-data="emailForm()" x-ref="form">
@@ -16,8 +11,8 @@
             
             <div class="p-6 space-y-4">
                 {{-- De (Conta) --}}
-                <div class="flex items-center gap-4 pb-4 border-b border-gray-200 dark:border-gray-700">
-                    <label class="w-16 text-sm font-medium text-gray-500 dark:text-gray-400">De:</label>
+                <div class="flex items-center gap-4 pb-4 border-b border-border border-border">
+                    <label class="w-16 text-sm font-medium text-muted-foreground">De:</label>
                     <select name="email_account_id" class="input flex-1" required>
                         @foreach($accounts as $account)
                             <option value="{{ $account->id }}" {{ $account->is_default ? 'selected' : '' }}>
@@ -29,7 +24,7 @@
 
                 {{-- Para --}}
                 <div class="flex items-center gap-4">
-                    <label class="w-16 text-sm font-medium text-gray-500 dark:text-gray-400">Para:</label>
+                    <label class="w-16 text-sm font-medium text-muted-foreground">Para:</label>
                     <div class="flex-1 flex items-center gap-2">
                         <input 
                             type="text" 
@@ -38,14 +33,14 @@
                             placeholder="destinatario@email.com (separe múltiplos com vírgula)"
                             required
                         >
-                        <button type="button" @click="showCc = !showCc" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">Cc</button>
-                        <button type="button" @click="showBcc = !showBcc" class="text-sm text-primary-600 dark:text-primary-400 hover:underline">Cco</button>
+                        <button type="button" @click="showCc = !showCc" class="text-sm text-primary hover:underline">Cc</button>
+                        <button type="button" @click="showBcc = !showBcc" class="text-sm text-primary hover:underline">Cco</button>
                     </div>
                 </div>
 
                 {{-- Cc --}}
                 <div x-show="showCc" x-collapse class="flex items-center gap-4">
-                    <label class="w-16 text-sm font-medium text-gray-500 dark:text-gray-400">Cc:</label>
+                    <label class="w-16 text-sm font-medium text-muted-foreground">Cc:</label>
                     <input 
                         type="text" 
                         name="cc_emails" 
@@ -56,7 +51,7 @@
 
                 {{-- Bcc --}}
                 <div x-show="showBcc" x-collapse class="flex items-center gap-4">
-                    <label class="w-16 text-sm font-medium text-gray-500 dark:text-gray-400">Cco:</label>
+                    <label class="w-16 text-sm font-medium text-muted-foreground">Cco:</label>
                     <input 
                         type="text" 
                         name="bcc_emails" 
@@ -66,8 +61,8 @@
                 </div>
 
                 {{-- Assunto --}}
-                <div class="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <label class="w-16 text-sm font-medium text-gray-500 dark:text-gray-400">Assunto:</label>
+                <div class="flex items-center gap-4 pt-4 border-t border-border border-border">
+                    <label class="w-16 text-sm font-medium text-muted-foreground">Assunto:</label>
                     <input 
                         type="text" 
                         name="subject" 
@@ -78,7 +73,7 @@
                 </div>
 
                 {{-- Corpo do Email --}}
-                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="pt-4 border-t border-border border-border">
                     <textarea 
                         name="body_html" 
                         rows="15" 
@@ -104,16 +99,16 @@
                 <div x-ref="fileInputsContainer"></div>
                 
                 {{-- Lista de anexos --}}
-                <div x-show="attachments.length > 0" class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Anexos:</p>
+                <div x-show="attachments.length > 0" class="mt-4 p-4 bg-muted/50 bg-card rounded-lg">
+                    <p class="text-sm font-medium text-foreground mb-2">Anexos:</p>
                     <div class="flex flex-wrap gap-2">
                         <template x-for="(file, index) in attachments" :key="file.id">
-                            <div class="flex items-center gap-2 bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600">
-                                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-center gap-2 bg-white dark:bg-gray-700 px-3 py-2 rounded-lg border border-border dark:border-gray-600">
+                                <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                                 </svg>
-                                <span class="text-sm text-gray-700 dark:text-gray-300" x-text="file.name"></span>
-                                <span class="text-xs text-gray-500" x-text="'(' + file.size + ')'"></span>
+                                <span class="text-sm text-foreground" x-text="file.name"></span>
+                                <span class="text-xs text-muted-foreground" x-text="'(' + file.size + ')'"></span>
                                 <button 
                                     type="button" 
                                     @click="removeFile(file.id)" 
@@ -130,14 +125,14 @@
             </div>
 
             {{-- Ações --}}
-            <div class="flex items-center justify-between p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex items-center justify-between p-6 border-t border-border border-border bg-muted/50 bg-card/50">
                 <div class="flex items-center gap-2">
-                    <button type="button" @click="$refs.fileInput.click()" class="p-2 rounded-lg text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer" title="Anexar arquivo">
+                    <button type="button" @click="$refs.fileInput.click()" class="p-2 rounded-lg text-muted-foreground hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer ui-tooltip ui-tooltip-top" data-tooltip="Anexar arquivo" aria-label="Anexar arquivo">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
                         </svg>
                     </button>
-                    <span class="text-sm text-gray-500" x-show="attachments.length > 0" x-text="attachments.length + ' arquivo(s)'"></span>
+                    <span class="text-sm text-muted-foreground" x-show="attachments.length > 0" x-text="attachments.length + ' arquivo(s)'"></span>
                 </div>
 
                 <div class="flex items-center gap-3">

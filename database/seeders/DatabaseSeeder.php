@@ -16,15 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
-            WorkContractSeeder::class,
-            DailyPointSeeder::class,
-            TaskSeeder::class,
-            PullRequestSeeder::class,
-            InvoiceSeeder::class,
-            MonthlyReportSeeder::class,
-            DasPaymentSeeder::class,
-            AnnualDeclarationSeeder::class,
+            CompanySeeder::class,
         ]);
     }
 }

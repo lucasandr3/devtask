@@ -1,15 +1,10 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('pull-requests.index') }}" class="p-2 bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Novo Pull Request</h2>
-        </div>
+        <h2 class="page-title">Novo Pull Request</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('pull-requests.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -32,7 +27,7 @@
 
                 <div>
                     <x-input-label for="title" value="Titulo" />
-                    <x-text-input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1" />
+                    <x-text-input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1" placeholder="Título do pull request" />
                     <x-input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
 
@@ -57,15 +52,15 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <div id="task_dropdown" class="hidden absolute z-50 w-full mt-1 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg shadow-lg max-h-60 overflow-auto">
+                        <div id="task_dropdown" class="hidden absolute z-50 w-full mt-1 bg-card border border-border border-border rounded-lg shadow-lg max-h-60 overflow-auto">
                             <div class="p-2">
-                                <div class="task-option cursor-pointer px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-700" data-value="">
-                                    <span class="text-gray-500 dark:text-gray-400">Nenhuma tarefa</span>
+                                <div class="task-option cursor-pointer px-3 py-2 rounded hover:bg-accent" data-value="">
+                                    <span class="text-muted-foreground">Nenhuma tarefa</span>
                                 </div>
                                 @foreach($tasks as $task)
-                                    <div class="task-option cursor-pointer px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-slate-700" data-value="{{ $task->id }}" data-title="{{ strtolower($task->title) }}" data-date="{{ $task->work_date->format('d/m/Y') }}">
-                                        <div class="font-medium text-gray-900 dark:text-white">{{ $task->title }}</div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ $task->work_date->format('d/m/Y') }}</div>
+                                    <div class="task-option cursor-pointer px-3 py-2 rounded hover:bg-accent" data-value="{{ $task->id }}" data-title="{{ strtolower($task->title) }}" data-date="{{ $task->work_date->format('d/m/Y') }}">
+                                        <div class="font-medium text-foreground">{{ $task->title }}</div>
+                                        <div class="text-sm text-muted-foreground">{{ $task->work_date->format('d/m/Y') }}</div>
                                     </div>
                                 @endforeach
                             </div>
@@ -79,7 +74,7 @@
                             </option>
                         @endforeach
                     </select>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Vincule este PR a uma tarefa específica</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Vincule este PR a uma tarefa específica</p>
                     <x-input-error :messages="$errors->get('task_id')" class="mt-2" />
                 </div>
 
@@ -101,7 +96,7 @@
                     </div>
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('pull-requests.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

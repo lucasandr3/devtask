@@ -1,14 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('tarefas.index') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Editar Tarefa</h2>
-        </div>
+        <h2 class="page-title">Editar Tarefa</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('tarefas.show', $task)" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -16,15 +11,49 @@
                 @csrf
                 @method('PUT')
 
+                @if($canManage)
                 <div>
-                    <x-input-label for="title" value="Titulo" />
-                    <x-text-input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" required class="mt-1" />
-                    <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                    <x-input-label for="project_id" value="Projeto" />
+                    <select name="project_id" id="project_id" required class="input mt-1">
+                        @foreach($projects as $project)
+                            <option value="{{ $project->id }}" {{ (string) old('project_id', $task->project_id) === (string) $project->id ? 'selected' : '' }}>
+                                {{ $project->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('project_id')" class="mt-2" />
                 </div>
 
                 <div>
+                    <x-input-label for="assigned_to" value="Responsável" />
+                    <select name="assigned_to" id="assigned_to" class="input mt-1">
+                        @foreach($members as $member)
+                            <option value="{{ $member->id }}" {{ (string) old('assigned_to', $task->assigned_to) === (string) $member->id ? 'selected' : '' }}>
+                                {{ $member->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('assigned_to')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="title" value="Titulo" />
+                    <x-text-input type="text" name="title" id="title" value="{{ old('title', $task->title) }}" required class="mt-1" placeholder="Título da tarefa" />
+                    <x-input-error :messages="$errors->get('title')" class="mt-2" />
+                </div>
+                @else
+                <div>
+                    <x-input-label value="Titulo" />
+                    <p class="mt-1 text-foreground font-medium">{{ $task->title }}</p>
+                    @if($task->project)
+                        <p class="text-sm text-muted-foreground mt-1">Projeto: {{ $task->project->name }}</p>
+                    @endif
+                </div>
+                @endif
+
+                <div>
                     <x-input-label for="description" value="Descricao" />
-                    <textarea name="description" id="description" rows="3" class="input mt-1">{{ old('description', $task->description) }}</textarea>
+                    <textarea name="description" id="description" rows="3" class="input mt-1" placeholder="Descreva a tarefa...">{{ old('description', $task->description) }}</textarea>
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
 
@@ -39,38 +68,26 @@
                     <x-input-error :messages="$errors->get('status')" class="mt-2" />
                 </div>
 
+                @if($canManage)
                 <div>
                     <x-input-label for="work_date" value="Data de Trabalho" />
                     <x-text-input type="text" name="work_date" id="work_date" value="{{ old('work_date', $task->work_date->format('Y-m-d')) }}" required class="mt-1" data-datepicker placeholder="Selecione a data" />
                     <x-input-error :messages="$errors->get('work_date')" class="mt-2" />
                 </div>
-
-                @if($task->pullRequests->count() > 0)
-                    <div class="border-t border-gray-200 dark:border-slate-700 pt-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Pull Requests Vinculados</h3>
-                        <div class="space-y-3">
-                            @foreach($task->pullRequests as $pr)
-                                <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg">
-                                    <div class="flex-1">
-                                        <a href="{{ $pr->url }}" target="_blank" class="text-primary-600 dark:text-primary-400 hover:underline font-medium">
-                                            {{ $pr->repo }} #{{ $pr->pr_number }}: {{ $pr->title }}
-                                        </a>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                            {{ $pr->work_date->format('d/m/Y') }} • {{ $pr->status }}
-                                        </p>
-                                    </div>
-                                    <a href="{{ route('pull-requests.edit', $pr) }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
                 @endif
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="border-t border-border pt-6">
+                    <h3 class="text-md font-semibold text-foreground mb-3">Tempo registrado</h3>
+                    <p class="text-sm text-muted-foreground mb-4">
+                        Total: <strong data-task-total-minutes data-task-id="{{ $task->id }}">{{ minutesToHours($task->totalTrackedMinutes()) }}</strong>
+                    </p>
+                    <div class="flex gap-2 items-center">
+                        @include('tasks.partials.timer-button', ['task' => $task, 'activeTimerTaskId' => $activeTimerTaskId ?? null])
+                        <a href="{{ route('tarefas.show', $task) }}" class="btn-secondary">Ver detalhes</a>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('tarefas.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

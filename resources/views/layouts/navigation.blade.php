@@ -1,18 +1,11 @@
-<nav x-data="{ open: false }" class="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-slate-700/50">
+<nav x-data="{ open: false }" class="sticky top-0 z-50 bg-white/80 bg-background/80 backdrop-blur-xl border-b border-border/50 border-border/50">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('painel') }}" class="flex items-center gap-2 group">
-                        <div class="p-2 bg-primary-600 rounded-lg group-hover:bg-primary-700 transition-colors duration-200">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                            </svg>
-                        </div>
-                        <span class="text-lg font-bold text-gray-900 dark:text-white hidden sm:block">DevTask</span>
-                    </a>
+                    <x-ui.logo :href="route('painel')" size="sm" text-class="text-lg font-bold text-foreground hidden sm:inline" />
                 </div>
 
                 <!-- Navigation Links -->
@@ -79,23 +72,23 @@
                 <!-- User Dropdown -->
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200">
+                        <button class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-foreground dark:text-gray-200 bg-card border border-border rounded-lg hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900 transition-all duration-200">
                             <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-slate-600 flex items-center justify-center">
-                                <span class="text-sm font-semibold text-primary-700 dark:text-primary-300">
+                                <span class="text-sm font-semibold text-primary">
                                     {{ substr(Auth::user()->name, 0, 1) }}
                                 </span>
                             </div>
                             <span class="hidden md:block max-w-24 truncate">{{ Auth::user()->name }}</span>
-                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="px-4 py-3 border-b border-gray-100 dark:border-slate-700">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ Auth::user()->email }}</p>
+                        <div class="px-4 py-3 border-b border-gray-100 border-border">
+                            <p class="text-sm font-medium text-foreground">{{ Auth::user()->name }}</p>
+                            <p class="text-xs text-muted-foreground truncate">{{ Auth::user()->email }}</p>
                         </div>
 
                         <x-dropdown-link :href="route('perfil.editar')">
@@ -122,7 +115,7 @@
             <!-- Hamburger -->
             <div class="flex items-center gap-2 sm:hidden">
                 <x-dark-mode-toggle />
-                <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-200">
+                <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-lg text-muted-foreground hover:text-foreground dark:hover:text-gray-200 hover:bg-accent focus:outline-none focus:ring-2 focus:ring-primary-500 transition duration-200">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -133,7 +126,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': !open}" class="hidden lg:hidden border-t border-gray-200 dark:border-slate-700">
+    <div :class="{'block': open, 'hidden': !open}" class="hidden lg:hidden border-t border-border">
         <div class="pt-2 pb-3 space-y-1 px-4">
             <x-responsive-nav-link :href="route('painel')" :active="request()->routeIs('painel')">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,22 +179,22 @@
         </div>
 
         <!-- Theme Selector Mobile -->
-        <div class="px-4 py-3 border-t border-gray-200 dark:border-slate-700">
-            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Tema de cores</p>
+        <div class="px-4 py-3 border-t border-border">
+            <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Tema de cores</p>
             <x-theme-selector />
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-3 border-t border-gray-200 dark:border-slate-700">
+        <div class="pt-4 pb-3 border-t border-border">
             <div class="px-4 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-primary-100 dark:bg-slate-600 flex items-center justify-center">
-                    <span class="text-sm font-semibold text-primary-700 dark:text-primary-300">
+                    <span class="text-sm font-semibold text-primary">
                         {{ substr(Auth::user()->name, 0, 1) }}
                     </span>
                 </div>
                 <div>
-                    <div class="font-medium text-base text-gray-800 dark:text-white">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500 dark:text-gray-400">{{ Auth::user()->email }}</div>
+                    <div class="font-medium text-base text-foreground">{{ Auth::user()->name }}</div>
+                    <div class="font-medium text-sm text-muted-foreground">{{ Auth::user()->email }}</div>
                 </div>
             </div>
 

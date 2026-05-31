@@ -1,30 +1,35 @@
-{{-- Mobile Header - Only visible on mobile/tablet --}}
-<header x-data class="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 z-30 dark-header">
-    <div class="flex items-center justify-between h-full px-4">
-        {{-- Menu Button --}}
-        <button 
-            @click="$dispatch('toggle-mobile-sidebar')"
-            class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+{{-- Mobile Header --}}
+<header class="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 border-b border-sidebar-border bg-sidebar text-sidebar-foreground">
+    <div class="flex items-center justify-between h-full px-3">
+        <button
+            type="button"
+            onclick="window.dispatchEvent(new CustomEvent('toggle-mobile-sidebar'))"
+            class="inline-flex items-center justify-center rounded-md h-9 w-9 hover:bg-accent hover:text-accent-foreground transition-colors"
+            aria-label="Abrir menu"
+            aria-expanded="false"
         >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
 
-        {{-- Logo --}}
-        <a href="{{ route('painel') }}" class="flex items-center gap-2">
-            <div class="p-1.5 bg-primary-600 rounded-lg">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                </svg>
+        @isset($header)
+            <div class="flex-1 px-2 min-w-0 text-sm font-semibold truncate text-center [&_.page-title]:text-sm [&_.page-title]:font-semibold [&_.page-title]:m-0">
+                {{ $header }}
             </div>
-            <span class="text-lg font-bold text-gray-900 dark:text-white">DevTask</span>
-        </a>
+        @else
+            <x-ui.logo :href="route('painel')" size="sm" text-class="text-sm font-bold" />
+        @endisset
 
-        {{-- Right Actions --}}
-        <div class="flex items-center gap-2">
-            <x-theme-selector />
-            <x-dark-mode-toggle />
+        <div class="flex items-center gap-1 flex-shrink-0">
+            @isset($headerActions)
+                <div class="flex items-center gap-1.5 mr-1 [&_a]:text-xs [&_a]:h-8 [&_a]:px-2.5">
+                    {{ $headerActions }}
+                </div>
+            @endisset
+            <x-theme-selector icon-only />
+            <x-header-notifications />
+            <x-header-user-menu show-text />
         </div>
     </div>
 </header>

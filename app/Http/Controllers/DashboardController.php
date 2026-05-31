@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ProjectStatus;
+use App\Enums\TaskStatus;
 use App\Models\DailyPoint;
+use App\Models\Project;
 use App\Models\Task;
-use App\Models\PullRequest;
+use App\Models\TimeEntry;
+use App\Support\CurrentCompany;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -15,41 +18,52 @@ class DashboardController extends Controller
         $now = Carbon::now()->locale('pt_BR');
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
+        $userId = auth()->id();
+        $isMember = CurrentCompany::isMember();
 
-        // Horas trabalhadas no mês
-        $points = DailyPoint::where('user_id', auth()->id())
-            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
-            ->get();
+        $taskQuery = CurrentCompany::tasksQuery();
 
-        $totalMinutes = $points->sum('total_minutes');
-        $normalMinutes = $points->sum('normal_minutes');
-        $extraMinutes = $points->sum('extra_minutes');
-
-        // Tarefas concluídas no mês
-        $tasksDone = Task::where('user_id', auth()->id())
+        $tasksDone = (clone $taskQuery)
             ->where('status', 'done')
             ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
             ->count();
 
-        // PRs entregues no mês
-        $prsDelivered = PullRequest::where('user_id', auth()->id())
-            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+        $tasksInProgress = (clone $taskQuery)
+            ->where('status', 'doing')
             ->count();
 
-        // Últimos pontos registrados
-        $recentPoints = DailyPoint::where('user_id', auth()->id())
-            ->orderBy('work_date', 'desc')
+        $trackedMinutes = TimeEntry::where('user_id', $userId)
+            ->whereHas('task.project', fn ($q) => $q->where('company_id', CurrentCompany::id()))
+            ->whereBetween('started_at', [$startOfMonth, $endOfMonth])
+            ->whereNotNull('ended_at')
+            ->sum('duration_minutes');
+
+        $punchMinutes = DailyPoint::where('user_id', $userId)
+            ->whereBetween('work_date', [$startOfMonth, $endOfMonth])
+            ->sum('total_minutes');
+
+        $recentProjects = CurrentCompany::projectsQuery()
+            ->withCount(['tasks' => fn ($q) => $isMember ? $q->where('assigned_to', $userId) : $q])
+            ->orderByDesc('updated_at')
             ->limit(5)
             ->get();
 
+        $activeProjects = $isMember
+            ? $recentProjects->where('status', ProjectStatus::ACTIVE)->count()
+            : Project::where('company_id', CurrentCompany::id())
+                ->where('status', ProjectStatus::ACTIVE)
+                ->count();
+
         return view('dashboard.index', [
-            'totalHours' => minutesToHours($totalMinutes),
-            'normalHours' => minutesToHours($normalMinutes),
-            'extraHours' => minutesToHours($extraMinutes),
+            'activeProjects' => $activeProjects,
             'tasksDone' => $tasksDone,
-            'prsDelivered' => $prsDelivered,
-            'recentPoints' => $recentPoints,
+            'tasksInProgress' => $tasksInProgress,
+            'trackedHours' => minutesToHours($trackedMinutes),
+            'punchHours' => minutesToHours($punchMinutes),
+            'recentProjects' => $recentProjects,
             'currentMonth' => $now->translatedFormat('F Y'),
+            'company' => CurrentCompany::get(),
+            'isMember' => $isMember,
         ]);
     }
 }

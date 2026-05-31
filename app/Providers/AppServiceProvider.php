@@ -19,8 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Registrar helpers
         require_once app_path('Helpers/TimeHelper.php');
         require_once app_path('Helpers/StatusHelper.php');
+
+        \Carbon\Carbon::setLocale('pt_BR');
     }
 }

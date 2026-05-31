@@ -1,14 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('horas.index') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Editar Hora</h2>
-        </div>
+        <h2 class="page-title">Editar Hora</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('horas.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -19,7 +14,7 @@
                 <div>
                     <x-input-label for="work_date" value="Data do Trabalho" />
                     <x-text-input type="text" name="work_date" id="work_date" value="{{ old('work_date', $point->work_date->format('Y-m-d')) }}" required class="mt-1" data-datepicker placeholder="Selecione a data" />
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Selecione a data para registro retroativo</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Selecione a data para registro retroativo</p>
                     <x-input-error :messages="$errors->get('work_date')" class="mt-2" />
                 </div>
 
@@ -49,8 +44,8 @@
                     </div>
                 </div>
 
-                <div class="border-t border-gray-200 dark:border-slate-700 pt-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Horas Extras (Opcional)</h3>
+                <div class="border-t border-border pt-6">
+                    <h3 class="text-lg font-semibold text-foreground mb-4">Horas Extras (Opcional)</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <x-input-label for="extra_start_time" value="Início Hora Extra (HH:MM)" />
@@ -72,7 +67,7 @@
                     <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('horas.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

@@ -1,15 +1,10 @@
 <x-app-layout>
 
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('tarefas.index') }}" class="p-2 bg-gray-100 dark:bg-slate-700 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Nova Tarefa</h2>
-        </div>
+        <h2 class="page-title">Nova Tarefa</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('tarefas.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -17,14 +12,42 @@
                 @csrf
 
                 <div>
+                    <x-input-label for="project_id" value="Projeto" />
+                    <select name="project_id" id="project_id" required class="input mt-1">
+                        <option value="">Selecione um projeto</option>
+                        @foreach($projects as $project)
+                            <option value="{{ $project->id }}" {{ (string) old('project_id', request('project_id')) === (string) $project->id ? 'selected' : '' }}>
+                                {{ $project->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('project_id')" class="mt-2" />
+                </div>
+
+                <div>
+                    <x-input-label for="assigned_to" value="Responsável" />
+                    <select name="assigned_to" id="assigned_to" class="input mt-1">
+                        <option value="">Eu ({{ auth()->user()->name }})</option>
+                        @foreach($members as $member)
+                            @if($member->id !== auth()->id())
+                                <option value="{{ $member->id }}" {{ (string) old('assigned_to') === (string) $member->id ? 'selected' : '' }}>
+                                    {{ $member->name }}
+                                </option>
+                            @endif
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('assigned_to')" class="mt-2" />
+                </div>
+
+                <div>
                     <x-input-label for="title" value="Titulo" />
-                    <x-text-input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1" />
+                    <x-text-input type="text" name="title" id="title" value="{{ old('title') }}" required class="mt-1" placeholder="Título da tarefa" />
                     <x-input-error :messages="$errors->get('title')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="description" value="Descricao" />
-                    <textarea name="description" id="description" rows="3" class="input mt-1">{{ old('description') }}</textarea>
+                    <textarea name="description" id="description" rows="3" class="input mt-1" placeholder="Descreva a tarefa...">{{ old('description') }}</textarea>
                     <x-input-error :messages="$errors->get('description')" class="mt-2" />
                 </div>
 
@@ -45,7 +68,7 @@
                     <x-input-error :messages="$errors->get('work_date')" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('tarefas.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

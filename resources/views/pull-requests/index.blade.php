@@ -7,44 +7,30 @@
         :createRoute="route('pull-requests.create')"
         createLabel="Novo PR"
         searchPlaceholder="Pesquisar pull requests..."
-        :selectable="true"
+        :selectable="false"
         tableId="pullRequestsTable"
     >
         <x-slot name="head">
-            <!-- <x-data-table.header>Repositório</x-data-table.header> -->
-            <x-data-table.header>PR #</x-data-table.header>
+            <x-data-table.header class="data-table-th-compact">PR #</x-data-table.header>
             <x-data-table.header>Título</x-data-table.header>
-            <!-- <x-data-table.header>Tarefa</x-data-table.header> -->
-            <x-data-table.header>Data</x-data-table.header>
-            <x-data-table.header align="right">Ações</x-data-table.header>
+            <x-data-table.header class="data-table-th-compact">Data</x-data-table.header>
+            <x-data-table.header align="right" class="data-table-th-actions">Ações</x-data-table.header>
         </x-slot>
 
         @forelse($pullRequests as $pr)
-            <x-data-table.row :selectable="true">
-                <!-- <x-data-table.cell class="font-medium text-gray-900 dark:text-white">
-                    {{ $pr->repo }}
-                </x-data-table.cell> -->
-                <x-data-table.cell>
+            <x-data-table.row>
+                <x-data-table.cell class="data-table-td-compact">
                     <x-status-badge status="#{{ $pr->pr_number }}" color="blue" />
                 </x-data-table.cell>
-                <x-data-table.cell>
-                    <a href="{{ $pr->url }}" target="_blank" class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 hover:underline inline-flex items-center gap-1" title="{{ $pr->title }}" style="max-width: 300px;">
-                        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $pr->title }}</span>
+                <x-data-table.cell truncate>
+                    <a href="{{ $pr->url }}" target="_blank" class="text-primary hover:text-primary/80 hover:underline inline-flex items-center gap-1 min-w-0 max-w-full ui-tooltip ui-tooltip-top" data-tooltip="{{ $pr->title }}">
+                        <span class="truncate">{{ $pr->title }}</span>
                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                         </svg>
                     </a>
                 </x-data-table.cell>
-                <!-- <x-data-table.cell>
-                    @if($pr->task)
-                        <a href="{{ route('tarefas.editar', $pr->task) }}" class="text-primary-600 dark:text-primary-400 hover:underline text-sm">
-                            {{ $pr->task->title }}
-                        </a>
-                    @else
-                        <span class="text-gray-400 dark:text-gray-600">-</span>
-                    @endif
-                </x-data-table.cell> -->
-                <x-data-table.cell>
+                <x-data-table.cell class="data-table-td-compact">
                     {{ $pr->work_date->format('d/m/Y') }}
                 </x-data-table.cell>
                 <x-data-table.actions 
@@ -55,7 +41,7 @@
             </x-data-table.row>
         @empty
             <x-data-table.empty 
-                :colspan="7"
+                :colspan="4"
                 message="Nenhum pull request registrado"
                 :createRoute="route('pull-requests.create')"
                 createLabel="Criar primeiro PR"

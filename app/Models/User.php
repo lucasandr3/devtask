@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'company_name',
         'cnpj',
+        'current_company_id',
     ];
 
     /**
@@ -58,9 +59,31 @@ class User extends Authenticatable
         return $this->hasMany(DailyPoint::class);
     }
 
+    public function currentCompany()
+    {
+        return $this->belongsTo(Company::class, 'current_company_id');
+    }
+
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class)
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    public function assignedTasks()
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
+    }
+
     public function tasks()
     {
         return $this->hasMany(Task::class);
+    }
+
+    public function timeEntries()
+    {
+        return $this->hasMany(TimeEntry::class);
     }
 
     public function pullRequests()

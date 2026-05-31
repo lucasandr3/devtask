@@ -6,7 +6,7 @@
     </x-slot>
 
     <div class="card p-6">
-        <p class="text-gray-900 dark:text-gray-100">
+        <p class="text-foreground dark:text-gray-100">
             {{ __("You're logged in!") }}
         </p>
     </div>

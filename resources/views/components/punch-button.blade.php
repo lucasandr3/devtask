@@ -6,7 +6,7 @@
     
     <div class="flex flex-col items-center gap-5 w-full">
         <div class="w-full">
-            <label for="time-{{ $type }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-center">
+            <label for="time-{{ $type }}" class="block text-sm font-medium text-foreground mb-2 text-center">
                 Horário (opcional)
             </label>
             <div class="flex items-center gap-2">
@@ -17,22 +17,23 @@
                     value="{{ $currentTime ? \Carbon\Carbon::parse($currentTime)->format('H:i') : '' }}"
                     placeholder="00:00"
                     maxlength="5"
-                    class="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-xl font-mono font-bold tracking-widest"
+                    class="input flex-1 text-center text-xl font-mono font-bold tracking-widest"
                     oninput="formatTimeInput(this)"
                     onkeypress="return validateTimeKey(event)"
                 />
                 <button
                     type="button"
                     onclick="setCurrentTime('time-{{ $type }}')"
-                    class="px-4 py-3 text-sm font-medium bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-300 dark:hover:bg-slate-600 transition-colors whitespace-nowrap"
-                    title="Usar hora atual"
+                    class="inline-flex items-center justify-center h-10 px-4 text-sm font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors whitespace-nowrap ui-tooltip ui-tooltip-top"
+                    data-tooltip="Usar hora atual"
+                    aria-label="Usar hora atual"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </button>
             </div>
-            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+            <p class="mt-2 text-xs text-muted-foreground text-center">
                 Deixe em branco para usar a hora atual
             </p>
         </div>
@@ -40,11 +41,11 @@
         <button
             type="submit"
             @if(!$enabled) disabled @endif
-            class="w-full px-8 py-4 text-lg font-semibold rounded-xl shadow-lg transition-all duration-200
-                {{ $enabled 
-                    ? 'bg-primary-600 dark:bg-primary-500 hover:bg-primary-700 dark:hover:bg-primary-600 text-white hover:shadow-xl transform hover:-translate-y-0.5' 
-                    : 'bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed' 
-                }}"
+            @class([
+                'w-full px-8 py-4 text-lg font-semibold rounded-md shadow transition-all duration-200',
+                'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md' => $enabled,
+                'bg-muted text-muted-foreground cursor-not-allowed opacity-50' => !$enabled,
+            ])
         >
             {{ $label }}
         </button>

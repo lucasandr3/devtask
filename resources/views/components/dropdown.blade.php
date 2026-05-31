@@ -1,11 +1,11 @@
-@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white dark:bg-slate-800'])
+@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'p-1'])
 
 @php
 $alignmentClasses = match ($align) {
     'left' => 'ltr:origin-top-left rtl:origin-top-right start-0',
     'top' => 'origin-top',
     'top-left' => 'ltr:origin-bottom-left rtl:origin-bottom-right start-0 bottom-full mb-2',
-    'top-right' => 'ltr:origin-bottom-right rtl:origin-bottom-left end-0 bottom-full mb-2',
+    'top-right' => 'ltr:origin-bottom-right rtl:origin-top-left end-0 bottom-full mb-2',
     default => 'ltr:origin-top-right rtl:origin-top-left end-0',
 };
 
@@ -13,6 +13,10 @@ $positionClasses = str_contains($align, 'top-') ? '' : 'mt-2';
 
 $width = match ($width) {
     '48' => 'w-48',
+    '56' => 'w-56',
+    '80' => 'w-80',
+    '96' => 'w-96',
+    'full' => 'w-full',
     default => $width,
 };
 @endphp
@@ -29,10 +33,9 @@ $width = match ($width) {
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="absolute z-50 {{ $positionClasses }} {{ $width }} rounded-xl shadow-lg {{ $alignmentClasses }}"
-            style="display: none;"
-            @click="open = false">
-        <div class="rounded-xl ring-1 ring-black/5 dark:ring-white/10 {{ $contentClasses }}">
+            class="absolute z-50 {{ $positionClasses }} {{ $width }} rounded-xl border border-border bg-popover text-popover-foreground shadow-lg overflow-hidden {{ $alignmentClasses }}"
+            style="display: none;">
+        <div class="{{ $contentClasses }}">
             {{ $content }}
         </div>
     </div>

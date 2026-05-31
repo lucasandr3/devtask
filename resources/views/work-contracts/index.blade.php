@@ -7,7 +7,7 @@
         :createRoute="route('contratos.create')"
         createLabel="Novo Contrato"
         searchPlaceholder="Pesquisar contratos..."
-        :selectable="true"
+        :selectable="false"
         tableId="contratosTable"
     >
         <x-slot name="head">
@@ -20,8 +20,8 @@
         </x-slot>
 
         @forelse($contracts as $contract)
-            <x-data-table.row :selectable="true">
-                <x-data-table.cell class="font-medium text-gray-900 dark:text-white">
+            <x-data-table.row>
+                <x-data-table.cell class="font-medium text-foreground">
                     {{ $contract->company_name ?? '-' }}
                 </x-data-table.cell>
                 <x-data-table.cell>
@@ -31,7 +31,7 @@
                         <span class="text-gray-400">-</span>
                     @endif
                 </x-data-table.cell>
-                <x-data-table.cell class="font-medium text-gray-900 dark:text-white">
+                <x-data-table.cell class="font-medium text-foreground">
                     {{ $contract->start_date->format('d/m/Y') }}
                 </x-data-table.cell>
                 <x-data-table.cell>

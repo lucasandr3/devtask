@@ -1,14 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-4">
-            <a href="{{ route('contratos.index') }}" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-            </a>
-            <h2 class="page-title">Editar Contrato</h2>
-        </div>
+        <h2 class="page-title">Editar Contrato</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('contratos.index')" class="mb-6" />
 
     <div>
         <div class="card p-6">
@@ -25,14 +20,14 @@
                 <div>
                     <x-input-label for="contract_value" value="Valor do Contrato (R$)" />
                     <x-text-input type="text" name="contract_value" id="contract_value" value="{{ old('contract_value', $workContract->contract_value) }}" class="mt-1" data-money placeholder="0,00" />
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Ex: 5.000,00</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Ex: 5.000,00</p>
                     <x-input-error :messages="$errors->get('contract_value')" class="mt-2" />
                 </div>
 
                 <div>
                     <x-input-label for="monthly_hours" value="Horas Mensais" />
-                    <x-text-input type="number" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours', round($workContract->monthly_minutes / 60, 2)) }}" step="0.01" min="0.01" required class="mt-1" />
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Digite a quantidade de horas mensais (ex: 220 ou 220.5)</p>
+                    <x-text-input type="number" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours', round($workContract->monthly_minutes / 60, 2)) }}" step="0.01" min="0.01" required class="mt-1" placeholder="220" />
+                    <p class="mt-1 text-sm text-muted-foreground">Digite a quantidade de horas mensais (ex: 220 ou 220.5)</p>
                     <x-input-error :messages="$errors->get('monthly_hours')" class="mt-2" />
                 </div>
 
@@ -52,11 +47,11 @@
 
                 <div>
                     <x-input-label for="notes" value="Observacoes" />
-                    <textarea name="notes" id="notes" rows="3" class="input mt-1">{{ old('notes', $workContract->notes) }}</textarea>
+                    <textarea name="notes" id="notes" rows="3" class="input mt-1" placeholder="Informações adicionais sobre o contrato...">{{ old('notes', $workContract->notes) }}</textarea>
                     <x-input-error :messages="$errors->get('notes')" class="mt-2" />
                 </div>
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-slate-700">
+                <div class="flex justify-end gap-3 pt-4 border-t border-border">
                     <a href="{{ route('contratos.index') }}" class="btn-secondary">Cancelar</a>
                     <x-primary-button>Salvar</x-primary-button>
                 </div>

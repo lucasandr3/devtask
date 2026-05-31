@@ -10,6 +10,20 @@ import IMask from 'imask';
 // Configurar Flatpickr em português
 flatpickr.localize(Portuguese);
 
+/** Classes do input original repassadas ao altInput visível */
+function flatpickrAltInputClass(el) {
+    return [...el.classList]
+        .filter((cls) => !cls.startsWith('flatpickr'))
+        .join(' ');
+}
+
+const flatpickrBaseOptions = {
+    altInput: true,
+    allowInput: true,
+    locale: Portuguese,
+    disableMobile: true,
+};
+
 /**
  * Inicializa todos os datepickers
  */
@@ -17,37 +31,30 @@ function initDatepickers() {
     // Datepicker padrão para datas (dd/mm/yyyy)
     document.querySelectorAll('[data-datepicker]').forEach(el => {
         flatpickr(el, {
+            ...flatpickrBaseOptions,
             dateFormat: 'Y-m-d',
-            altInput: true,
             altFormat: 'd/m/Y',
-            allowInput: true,
-            locale: Portuguese,
-            disableMobile: true,
+            altInputClass: flatpickrAltInputClass(el),
         });
     });
 
     // Datepicker para meses (mm/yyyy)
     document.querySelectorAll('[data-monthpicker]').forEach(el => {
         flatpickr(el, {
+            ...flatpickrBaseOptions,
             dateFormat: 'Y-m',
-            altInput: true,
             altFormat: 'F Y',
-            allowInput: true,
-            locale: Portuguese,
-            disableMobile: true,
-            plugins: [],
+            altInputClass: flatpickrAltInputClass(el),
         });
     });
 
     // Datepicker para filtros de data (range)
     document.querySelectorAll('[data-datepicker-filter]').forEach(el => {
         flatpickr(el, {
+            ...flatpickrBaseOptions,
             dateFormat: 'Y-m-d',
-            altInput: true,
             altFormat: 'd/m/Y',
-            allowInput: true,
-            locale: Portuguese,
-            disableMobile: true,
+            altInputClass: flatpickrAltInputClass(el),
         });
     });
 }

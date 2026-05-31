@@ -1,15 +1,9 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="page-title">Editar Conta de Email</h2>
-            <a href="{{ route('configuracoes.emails.index') }}" class="btn-secondary text-sm">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                Voltar
-            </a>
-        </div>
+        <h2 class="page-title">Editar Conta de Email</h2>
     </x-slot>
+
+    <x-ui.page-back :href="route('configuracoes.emails.index')" class="mb-6" />
 
     <div class="card" x-data="{ 
         provider: '{{ $emailAccount->provider }}',
@@ -29,14 +23,14 @@
             <div class="p-6 space-y-6">
                 {{-- Seleção de Provedor --}}
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Provedor de Email</label>
+                    <label class="block text-sm font-medium text-foreground mb-3">Provedor de Email</label>
                     <div class="grid grid-cols-5 gap-3">
                         @foreach(['gmail' => 'Gmail', 'outlook' => 'Outlook', 'yahoo' => 'Yahoo', 'icloud' => 'iCloud', 'custom' => 'Outro'] as $key => $label)
                             <label class="relative">
                                 <input type="radio" name="provider" value="{{ $key }}" x-model="provider" class="sr-only peer" {{ $emailAccount->provider === $key ? 'checked' : '' }}>
                                 <div class="flex flex-col items-center p-3 rounded-xl border-2 cursor-pointer transition-all
-                                    peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/20
-                                    border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600">
+                                    peer-checked:border-primary peer-checked:bg-primary/10 dark:peer-checked:bg-primary-900/20
+                                    border-border border-border hover:border-border hover:border-border">
                                     @if($key === 'gmail')
                                         <svg class="w-6 h-6 text-red-500 mb-1" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
@@ -50,15 +44,15 @@
                                             <path d="M11.996 0C5.381 0 0 5.381 0 11.996 0 18.62 5.381 24 11.996 24c6.623 0 12.004-5.38 12.004-12.004C24 5.381 18.619 0 11.996 0zm4.476 7.554l-2.528 5.9 2.702 5.98h-2.482l-2.445-5.726-2.453 5.726H6.786l2.695-5.98-2.528-5.9h2.482l2.204 5.152 2.351-5.152z"/>
                                         </svg>
                                     @elseif($key === 'icloud')
-                                        <svg class="w-6 h-6 text-gray-600 dark:text-gray-400 mb-1" viewBox="0 0 24 24" fill="currentColor">
+                                        <svg class="w-6 h-6 text-muted-foreground mb-1" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M13.762 3.75c1.658 0 3.217.652 4.387 1.835a6.22 6.22 0 0 1 1.888 4.475c.002.078-.003.156-.008.233a5.471 5.471 0 0 1 3.721 5.194c0 3.024-2.462 5.488-5.488 5.488H6.238A6.238 6.238 0 0 1 0 14.737c0-2.598 1.614-4.933 4.03-5.856a6.223 6.223 0 0 1 5.862-8.131h3.87z"/>
                                         </svg>
                                     @else
-                                        <svg class="w-6 h-6 text-gray-500 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-6 h-6 text-muted-foreground mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                                         </svg>
                                     @endif
-                                    <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ $label }}</span>
+                                    <span class="text-xs font-medium text-foreground">{{ $label }}</span>
                                 </div>
                             </label>
                         @endforeach
@@ -68,18 +62,18 @@
                 {{-- Informações Básicas --}}
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nome da Conta</label>
-                        <input type="text" name="name" id="name" value="{{ old('name', $emailAccount->name) }}" required class="input">
+                        <label for="name" class="block text-sm font-medium text-foreground mb-1">Nome da Conta</label>
+                        <input type="text" name="name" id="name" value="{{ old('name', $emailAccount->name) }}" required class="input" placeholder="Ex: Gmail Pessoal">
                     </div>
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Endereço de Email</label>
-                        <input type="email" name="email" id="email" value="{{ old('email', $emailAccount->email) }}" required class="input">
+                        <label for="email" class="block text-sm font-medium text-foreground mb-1">Endereço de Email</label>
+                        <input type="email" name="email" id="email" value="{{ old('email', $emailAccount->email) }}" required class="input" placeholder="seu@email.com">
                     </div>
                 </div>
 
                 {{-- Senha --}}
                 <div>
-                    <label for="smtp_password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label for="smtp_password" class="block text-sm font-medium text-foreground mb-1">
                         Nova Senha de App
                         <span class="text-gray-400 font-normal">(deixe em branco para manter a atual)</span>
                     </label>
@@ -89,32 +83,32 @@
 
                 {{-- Configurações Avançadas --}}
                 <div>
-                    <button type="button" @click="showAdvanced = !showAdvanced" class="flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                    <button type="button" @click="showAdvanced = !showAdvanced" class="flex items-center gap-2 text-sm text-primary hover:underline">
                         <svg class="w-4 h-4 transition-transform" :class="showAdvanced ? 'rotate-90' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
                         Configurações Avançadas
                     </button>
 
-                    <div x-show="showAdvanced" x-collapse class="mt-4 space-y-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div x-show="showAdvanced" x-collapse class="mt-4 space-y-4 p-4 bg-muted/50 dark:bg-gray-700/50 rounded-lg">
                         {{-- SMTP --}}
                         <div>
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Configurações SMTP (Envio)</h4>
+                            <h4 class="text-sm font-medium text-foreground mb-3">Configurações SMTP (Envio)</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Servidor SMTP</label>
-                                    <input type="text" name="smtp_host" value="{{ old('smtp_host', $emailAccount->smtp_host) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Servidor SMTP</label>
+                                    <input type="text" name="smtp_host" value="{{ old('smtp_host', $emailAccount->smtp_host) }}" class="input text-sm" placeholder="smtp.exemplo.com">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Porta SMTP</label>
-                                    <input type="number" name="smtp_port" value="{{ old('smtp_port', $emailAccount->smtp_port) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Porta SMTP</label>
+                                    <input type="number" name="smtp_port" value="{{ old('smtp_port', $emailAccount->smtp_port) }}" class="input text-sm" placeholder="587">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Usuário SMTP</label>
-                                    <input type="text" name="smtp_username" value="{{ old('smtp_username', $emailAccount->smtp_username) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Usuário SMTP</label>
+                                    <input type="text" name="smtp_username" value="{{ old('smtp_username', $emailAccount->smtp_username) }}" class="input text-sm" placeholder="Seu email">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Criptografia</label>
+                                    <label class="block text-xs text-muted-foreground mb-1">Criptografia</label>
                                     <select name="smtp_encryption" class="input text-sm">
                                         <option value="tls" {{ $emailAccount->smtp_encryption === 'tls' ? 'selected' : '' }}>TLS</option>
                                         <option value="ssl" {{ $emailAccount->smtp_encryption === 'ssl' ? 'selected' : '' }}>SSL</option>
@@ -126,22 +120,22 @@
 
                         {{-- IMAP --}}
                         <div>
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">Configurações IMAP (Recebimento)</h4>
+                            <h4 class="text-sm font-medium text-foreground mb-3">Configurações IMAP (Recebimento)</h4>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Servidor IMAP</label>
-                                    <input type="text" name="imap_host" value="{{ old('imap_host', $emailAccount->imap_host) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Servidor IMAP</label>
+                                    <input type="text" name="imap_host" value="{{ old('imap_host', $emailAccount->imap_host) }}" class="input text-sm" placeholder="imap.exemplo.com">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Porta IMAP</label>
-                                    <input type="number" name="imap_port" value="{{ old('imap_port', $emailAccount->imap_port) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Porta IMAP</label>
+                                    <input type="number" name="imap_port" value="{{ old('imap_port', $emailAccount->imap_port) }}" class="input text-sm" placeholder="993">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Usuário IMAP</label>
-                                    <input type="text" name="imap_username" value="{{ old('imap_username', $emailAccount->imap_username) }}" class="input text-sm">
+                                    <label class="block text-xs text-muted-foreground mb-1">Usuário IMAP</label>
+                                    <input type="text" name="imap_username" value="{{ old('imap_username', $emailAccount->imap_username) }}" class="input text-sm" placeholder="Seu email">
                                 </div>
                                 <div>
-                                    <label class="block text-xs text-gray-600 dark:text-gray-400 mb-1">Criptografia</label>
+                                    <label class="block text-xs text-muted-foreground mb-1">Criptografia</label>
                                     <select name="imap_encryption" class="input text-sm">
                                         <option value="ssl" {{ $emailAccount->imap_encryption === 'ssl' ? 'selected' : '' }}>SSL</option>
                                         <option value="tls" {{ $emailAccount->imap_encryption === 'tls' ? 'selected' : '' }}>TLS</option>
@@ -154,20 +148,20 @@
                 </div>
 
                 {{-- Status --}}
-                <div class="flex items-center gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div class="flex items-center gap-6 pt-4 border-t border-border border-border">
                     <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" name="is_active" value="1" {{ $emailAccount->is_active ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                        <span class="text-sm text-gray-700 dark:text-gray-300">Conta ativa</span>
+                        <input type="checkbox" name="is_active" value="1" {{ $emailAccount->is_active ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-border rounded focus:ring-primary-500">
+                        <span class="text-sm text-foreground">Conta ativa</span>
                     </label>
                     <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" name="is_default" value="1" {{ $emailAccount->is_default ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500">
-                        <span class="text-sm text-gray-700 dark:text-gray-300">Conta padrão</span>
+                        <input type="checkbox" name="is_default" value="1" {{ $emailAccount->is_default ? 'checked' : '' }} class="w-4 h-4 text-primary-600 border-border rounded focus:ring-primary-500">
+                        <span class="text-sm text-foreground">Conta padrão</span>
                     </label>
                 </div>
             </div>
 
             {{-- Footer --}}
-            <div class="flex items-center justify-end gap-3 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-border border-border bg-muted/50 bg-card/50">
                 <a href="{{ route('configuracoes.emails.index') }}" class="btn-secondary">Cancelar</a>
                 <button type="submit" class="btn-primary">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

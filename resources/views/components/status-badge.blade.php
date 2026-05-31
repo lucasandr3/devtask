@@ -2,17 +2,17 @@
 
 @php
 $colorClasses = match($color) {
-    'green' => 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 ring-green-600/20 dark:ring-green-500/30',
-    'yellow' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 ring-yellow-600/20 dark:ring-yellow-500/30',
-    'red' => 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-red-600/20 dark:ring-red-500/30',
-    'blue' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 ring-blue-600/20 dark:ring-blue-500/30',
-    'purple' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 ring-purple-600/20 dark:ring-purple-500/30',
-    'gray' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 ring-gray-600/20 dark:ring-gray-500/30',
-    'orange' => 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 ring-orange-600/20 dark:ring-orange-500/30',
-    default => 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400 ring-gray-600/20 dark:ring-gray-500/30',
+    'green' => 'border-transparent bg-emerald-500/10 text-emerald-700 dark:text-emerald-400',
+    'yellow' => 'border-transparent bg-amber-500/10 text-amber-700 dark:text-amber-400',
+    'red' => 'border-transparent bg-destructive/10 text-destructive',
+    'blue' => 'border-transparent bg-primary/10 text-primary',
+    'purple' => 'border-transparent bg-violet-500/10 text-violet-700 dark:text-violet-400',
+    'gray' => 'border-transparent bg-secondary text-secondary-foreground',
+    'orange' => 'border-transparent bg-orange-500/10 text-orange-700 dark:text-orange-400',
+    default => 'border-transparent bg-secondary text-secondary-foreground',
 };
 @endphp
 
-<span class="inline-flex items-center px-2.5 py-1 text-xs font-semibold rounded-full ring-1 ring-inset {{ $colorClasses }}">
+<span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors {{ $colorClasses }}">
     {{ $status }}
 </span>
