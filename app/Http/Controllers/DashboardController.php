@@ -54,14 +54,41 @@ class DashboardController extends Controller
                 ->where('status', ProjectStatus::ACTIVE)
                 ->count();
 
+        $tasksTodo = (clone $taskQuery)
+            ->where('status', TaskStatus::TODO)
+            ->count();
+
+        $recentTasks = CurrentCompany::tasksQuery()
+            ->with('project')
+            ->when($isMember, fn ($q) => $q->where('assigned_to', $userId))
+            ->orderByDesc('updated_at')
+            ->limit(5)
+            ->get();
+
+        $activeTimer = TimeEntry::with('task.project')
+            ->where('user_id', $userId)
+            ->whereNull('ended_at')
+            ->first();
+
+        $todayPoint = DailyPoint::where('user_id', $userId)
+            ->whereDate('work_date', $now->toDateString())
+            ->first();
+
         return view('dashboard.index', [
             'activeProjects' => $activeProjects,
             'tasksDone' => $tasksDone,
             'tasksInProgress' => $tasksInProgress,
+            'tasksTodo' => $tasksTodo,
             'trackedHours' => minutesToHours($trackedMinutes),
             'punchHours' => minutesToHours($punchMinutes),
             'recentProjects' => $recentProjects,
+            'recentTasks' => $recentTasks,
+            'activeTimer' => $activeTimer,
+            'todayPoint' => $todayPoint,
+            'nextPunchType' => $todayPoint?->getNextPunchType(),
+            'todayHours' => minutesToHours($todayPoint?->total_minutes ?? 0),
             'currentMonth' => $now->translatedFormat('F Y'),
+            'todayFormatted' => $now->translatedFormat('l, d \d\e F'),
             'company' => CurrentCompany::get(),
             'isMember' => $isMember,
         ]);
