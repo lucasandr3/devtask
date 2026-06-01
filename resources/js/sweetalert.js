@@ -30,7 +30,6 @@ function baseConfig() {
         background: colors.background,
         color: colors.color,
         confirmButtonColor: colors.primary,
-        cancelButtonColor: colors.muted,
         buttonsStyling: true,
         customClass: {
             popup: 'gestorpro-swal-popup',
@@ -132,12 +131,13 @@ window.Toast = {
 
 function initConfirmForms() {
     document.querySelectorAll('form[data-confirm]').forEach((form) => {
-        form.addEventListener('submit', async (event) => {
-            if (form.dataset.confirmed === 'true') {
-                delete form.dataset.confirmed;
-                return;
-            }
+        if (form.dataset.confirmBound === 'true') {
+            return;
+        }
 
+        form.dataset.confirmBound = 'true';
+
+        form.addEventListener('submit', async (event) => {
             event.preventDefault();
 
             const result = await window.SwalAlert.confirm({
@@ -149,8 +149,7 @@ function initConfirmForms() {
             });
 
             if (result.isConfirmed) {
-                form.dataset.confirmed = 'true';
-                form.requestSubmit();
+                HTMLFormElement.prototype.submit.call(form);
             }
         });
     });

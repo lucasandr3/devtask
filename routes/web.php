@@ -81,7 +81,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Gestão financeira da empresa
     Route::get('/financeiro', [CompanyFinancialController::class, 'index'])->name('financeiro.index');
-    Route::resource('clientes', ClientController::class)->except(['show']);
+    Route::resource('clientes', ClientController::class)
+        ->parameters(['clientes' => 'client'])
+        ->except(['show']);
     Route::resource('financeiro/lancamentos', FinancialTransactionController::class)
         ->parameters(['lancamentos' => 'lancamento'])
         ->names('financeiro.lancamentos')

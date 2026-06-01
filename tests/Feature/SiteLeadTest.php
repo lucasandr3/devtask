@@ -197,6 +197,23 @@ class SiteLeadTest extends TestCase
         $response->assertSee('maria@example.com');
     }
 
+    public function test_admin_can_delete_site_lead(): void
+    {
+        $lead = SiteLead::create([
+            'company_id' => $this->company->id,
+            'name' => 'Maria',
+            'email' => 'maria@example.com',
+            'message' => 'Olá',
+            'status' => SiteLeadStatus::NEW,
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->delete(route('contatos-site.destroy', $lead));
+
+        $response->assertRedirect(route('contatos-site.index'));
+        $this->assertDatabaseMissing('site_leads', ['id' => $lead->id]);
+    }
+
     public function test_member_cannot_view_site_leads(): void
     {
         $response = $this->actingAs($this->member)->get(route('contatos-site.index'));

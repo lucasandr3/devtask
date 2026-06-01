@@ -48,8 +48,10 @@ class SiteLeadController extends Controller
         abort_unless(CurrentCompany::canManageFinance(), 403);
 
         if ($siteLead->isConverted()) {
+            $siteLead->load('client');
+
             return redirect()
-                ->route('clientes.edit', $siteLead->client_id)
+                ->route('clientes.edit', $siteLead->client)
                 ->with('success', 'Este contato já está vinculado a um cliente.');
         }
 

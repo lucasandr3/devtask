@@ -722,6 +722,22 @@ input.flatpickr-input {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     padding: 0.5rem 1rem !important;
+    box-shadow: none !important;
+}
+
+.gestorpro-swal-confirm {
+    color: hsl(var(--primary-foreground)) !important;
+}
+
+.gestorpro-swal-cancel {
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+}
+
+.gestorpro-swal-cancel:hover {
+    background-color: hsl(var(--muted)) !important;
+    color: hsl(var(--foreground)) !important;
 }
 
 .swal2-toast.gestorpro-swal-popup {
