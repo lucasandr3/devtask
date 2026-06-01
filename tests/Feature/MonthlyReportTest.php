@@ -7,6 +7,7 @@ use App\Models\MonthlyReport;
 use App\Models\User;
 use App\Models\UserWorkContract;
 use App\Services\MonthlyReportService;
+use App\Services\WorkContractService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -30,7 +31,7 @@ class MonthlyReportTest extends TestCase
         // Criar contrato
         UserWorkContract::create([
             'user_id' => $this->user->id,
-            'monthly_minutes' => 13200, // 220 horas
+            'monthly_minutes' => 168 * 60, // 168 horas
             'start_date' => Carbon::now()->startOfMonth(),
             'end_date' => null,
         ]);
@@ -48,7 +49,7 @@ class MonthlyReportTest extends TestCase
         $report = $this->service->generate($this->user->id, Carbon::now()->format('Y-m'));
 
         $this->assertNotNull($report);
-        $this->assertEquals(13200, $report->contract_minutes);
+        $this->assertEquals(168 * 60, $report->contract_minutes);
         $this->assertEquals(480, $report->normal_minutes);
         $this->assertEquals(60, $report->extra_minutes);
         $this->assertEquals(540, $report->total_minutes);
@@ -58,7 +59,7 @@ class MonthlyReportTest extends TestCase
     {
         UserWorkContract::create([
             'user_id' => $this->user->id,
-            'monthly_minutes' => 13200, // 220 horas
+            'monthly_minutes' => 168 * 60, // 168 horas
             'start_date' => Carbon::now()->startOfMonth(),
             'end_date' => null,
         ]);
@@ -75,15 +76,14 @@ class MonthlyReportTest extends TestCase
 
         $report = $this->service->generate($this->user->id, Carbon::now()->format('Y-m'));
 
-        // Saldo = 14000 - 13200 = 800 minutos (positivo)
-        $this->assertEquals(800, $report->balance_minutes);
+        // Saldo = 14000 - 10080 = 3920 minutos (positivo)
+        $this->assertEquals(3920, $report->balance_minutes);
     }
 
-    public function test_throws_exception_when_no_contract(): void
+    public function test_uses_default_contract_minutes_when_no_contract(): void
     {
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Nenhum contrato ativo encontrado');
+        $report = $this->service->generate($this->user->id, Carbon::now()->format('Y-m'));
 
-        $this->service->generate($this->user->id, Carbon::now()->format('Y-m'));
+        $this->assertEquals(WorkContractService::DEFAULT_MONTHLY_MINUTES, $report->contract_minutes);
     }
 }

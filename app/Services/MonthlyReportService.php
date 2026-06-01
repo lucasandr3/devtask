@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Enums\MonthlyReportStatus;
 use App\Models\MonthlyReport;
-use App\Models\UserWorkContract;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class MonthlyReportService
 {
@@ -21,12 +19,9 @@ class MonthlyReportService
         $startOfMonth = $date->copy()->startOfMonth();
         $endOfMonth = $date->copy()->endOfMonth();
 
-        // Busca contrato ativo no mês (usa o meio do mês como referência)
-        $contract = $this->workContractService->getActiveContractForDate($userId, $date->copy()->day(15));
-        
-        if (!$contract) {
-            throw new \Exception('Nenhum contrato ativo encontrado para o mês especificado.');
-        }
+        // Contrato ativo no mês (meio do mês como referência) ou carga padrão de 168h
+        $referenceDate = $date->copy()->day(15);
+        $contractMinutes = $this->workContractService->getMonthlyMinutesForDate($userId, $referenceDate);
 
         // Soma horas diárias do mês
         $points = $this->dailyPointService->getMonthlyPoints($userId, $month);
@@ -36,7 +31,7 @@ class MonthlyReportService
         $totalMinutes = $normalMinutes + $extraMinutes;
 
         // Calcula saldo (total - contrato)
-        $balanceMinutes = $totalMinutes - $contract->monthly_minutes;
+        $balanceMinutes = $totalMinutes - $contractMinutes;
 
         // Cria ou atualiza relatório
         $report = MonthlyReport::updateOrCreate(
@@ -45,7 +40,7 @@ class MonthlyReportService
                 'reference_month' => $startOfMonth,
             ],
             [
-                'contract_minutes' => $contract->monthly_minutes,
+                'contract_minutes' => $contractMinutes,
                 'normal_minutes' => $normalMinutes,
                 'extra_minutes' => $extraMinutes,
                 'total_minutes' => $totalMinutes,

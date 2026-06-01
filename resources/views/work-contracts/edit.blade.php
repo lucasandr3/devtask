@@ -26,8 +26,8 @@
 
                 <div>
                     <x-input-label for="monthly_hours" value="Horas Mensais" />
-                    <x-text-input type="text" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours', number_format($workContract->monthly_minutes / 60, 2, ',', '.')) }}" required class="mt-1" data-decimal placeholder="220,00" />
-                    <p class="mt-1 text-sm text-muted-foreground">Digite a quantidade de horas mensais (ex: 220 ou 220.5)</p>
+                    <x-text-input type="text" name="monthly_hours" id="monthly_hours" value="{{ old('monthly_hours', number_format($workContract->monthly_minutes / 60, 2, ',', '.')) }}" required class="mt-1" data-decimal placeholder="168,00" />
+                    <p class="mt-1 text-sm text-muted-foreground">Digite a quantidade de horas mensais (ex: 168 ou 168.5)</p>
                     <x-input-error :messages="$errors->get('monthly_hours')" class="mt-2" />
                 </div>
 

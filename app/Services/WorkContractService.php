@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\DB;
 
 class WorkContractService
 {
+    /** Carga horária mensal padrão (168h) quando não há contrato ativo. */
+    public const DEFAULT_MONTHLY_MINUTES = 168 * 60;
+
+    public function getMonthlyMinutesForDate(int $userId, Carbon $date): int
+    {
+        $contract = $this->getActiveContractForDate($userId, $date);
+
+        return $contract?->monthly_minutes ?? self::DEFAULT_MONTHLY_MINUTES;
+    }
+
     public function getActiveContractForDate(int $userId, Carbon $date): ?UserWorkContract
     {
         return UserWorkContract::where('user_id', $userId)

@@ -8,6 +8,7 @@ use App\Models\MonthlyReport;
 use App\Services\MonthlyReportService;
 use App\Services\PdfService;
 use App\Services\FinancialReportService;
+use App\Services\WorkContractService;
 use App\Support\CurrentCompany;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -64,11 +65,8 @@ class MonthlyReportController extends Controller
         $extraMinutes = $dailyPoints->sum('extra_minutes');
         $workedDays = $dailyPoints->count();
 
-        // Contrato de horas (buscar do work contract ativo ou usar padrão)
-        $contract = auth()->user()->workContracts()
-            ->active($date)
-            ->first();
-        $contractMinutes = $contract ? $contract->monthly_minutes : 220 * 60;
+        $contractMinutes = app(WorkContractService::class)
+            ->getMonthlyMinutesForDate(auth()->id(), $date);
 
         $balanceMinutes = $totalMinutes - $contractMinutes;
 
@@ -94,8 +92,18 @@ class MonthlyReportController extends Controller
 
         try {
             $this->monthlyReportService->generate(auth()->id(), $month);
+
+            $date = Carbon::createFromFormat('Y-m', $month)->day(15);
+            $hasContract = app(WorkContractService::class)
+                ->getActiveContractForDate(auth()->id(), $date) !== null;
+
+            $message = 'Relatório gerado com sucesso!';
+            if (! $hasContract) {
+                $message .= ' Nenhum contrato ativo no período — foi usada a carga padrão de 168h. Cadastre um contrato em Contratos para valores personalizados.';
+            }
+
             return redirect()->route('relatorios-mensais.index', ['month' => $month])
-                ->with('success', 'Relatório gerado com sucesso!');
+                ->with('success', $message);
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }

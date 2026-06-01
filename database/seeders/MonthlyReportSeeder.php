@@ -29,8 +29,8 @@ class MonthlyReportSeeder extends Seeder
                 continue;
             }
             
-            // Minutos de contrato (220h = 13200 min)
-            $contractMinutes = 13200;
+            // Minutos de contrato (168h = 10080 min)
+            $contractMinutes = 168 * 60;
             
             // Gera valores realistas
             $normalMinutes = fake()->numberBetween(12000, 13500);

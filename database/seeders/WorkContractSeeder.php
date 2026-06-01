@@ -14,12 +14,12 @@ class WorkContractSeeder extends Seeder
         $user = User::first();
 
         if ($user) {
-            // Contrato atual - 220 horas mensais = 13200 minutos
+            // Contrato atual - 168 horas mensais = 10080 minutos
             UserWorkContract::create([
                 'user_id' => $user->id,
                 'company_name' => 'Tech Solutions Ltda',
                 'contract_value' => 9500.00,
-                'monthly_minutes' => 13200, // 220 horas
+                'monthly_minutes' => 168 * 60, // 168 horas
                 'start_date' => Carbon::now()->subMonths(6)->startOfMonth(),
                 'end_date' => null,
                 'notes' => 'Contrato de prestação de serviços de desenvolvimento',

@@ -103,8 +103,10 @@ class PdfService
 
         // Carga horária contratual do contrato ativo no mês (ex.: 168h)
         $workContractService = app(WorkContractService::class);
-        $contract = $workContractService->getActiveContractForDate($userId, $date->copy()->startOfMonth());
-        $contractMinutes = $contract ? $contract->monthly_minutes : 0;
+        $contractMinutes = $workContractService->getMonthlyMinutesForDate(
+            $userId,
+            $date->copy()->day(15)
+        );
         $balanceMinutes = $totalMinutes - $contractMinutes;
 
         $options = new Options();
