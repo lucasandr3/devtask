@@ -98,6 +98,10 @@
                     </x-sidebar-link>
                 @endif
                 @if(\App\Support\CurrentCompany::canManageTeam())
+                    <x-sidebar-link :href="route('contatos-site.index')" :active="request()->routeIs('contatos-site.*')">
+                        <x-slot name="icon"><x-ui.icon name="mail" /></x-slot>
+                        Contatos do site
+                    </x-sidebar-link>
                     <x-sidebar-link :href="route('equipe.index')" :active="request()->routeIs('equipe.*')">
                         <x-slot name="icon"><x-ui.icon name="team" /></x-slot>
                         Equipe
@@ -165,6 +169,7 @@
                     $links[] = ['route' => 'relatorios-mensais.aprovacoes', 'label' => 'Aprovar Relatórios', 'match' => 'relatorios-mensais.aprovacoes', 'icon' => 'approve'];
                 }
                 if (\App\Support\CurrentCompany::canManageTeam()) {
+                    $links[] = ['route' => 'contatos-site.index', 'label' => 'Contatos do site', 'match' => 'contatos-site.*', 'icon' => 'mail'];
                     $links[] = ['route' => 'equipe.index', 'label' => 'Equipe', 'match' => 'equipe.*', 'icon' => 'team'];
                 }
                 if (\App\Support\CurrentCompany::canViewFinance()) {

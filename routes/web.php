@@ -15,6 +15,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectHoursReportController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SiteLeadController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TaskTimerController;
 use App\Http\Controllers\TeamController;
@@ -99,6 +100,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/declaracao-anual/gerar', [AnnualDeclarationController::class, 'generate'])->name('declaracao-anual.gerar');
     Route::get('/declaracao-anual/{annualDeclaration}', [AnnualDeclarationController::class, 'show'])->name('declaracao-anual.show');
     Route::get('/declaracao-anual/{annualDeclaration}/pdf', [AnnualDeclarationController::class, 'pdf'])->name('declaracao-anual.pdf');
+
+    // Contatos do site (admin)
+    Route::get('/contatos-site', [SiteLeadController::class, 'index'])->name('contatos-site.index');
+    Route::get('/contatos-site/{siteLead}', [SiteLeadController::class, 'show'])->name('contatos-site.show');
+    Route::patch('/contatos-site/{siteLead}/arquivar', [SiteLeadController::class, 'archive'])->name('contatos-site.archive');
+    Route::delete('/contatos-site/{siteLead}', [SiteLeadController::class, 'destroy'])->name('contatos-site.destroy');
 
     // Equipe (admin)
     Route::get('/equipe', [TeamController::class, 'index'])->name('equipe.index');
