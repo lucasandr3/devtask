@@ -30,7 +30,7 @@ class StoreSiteLeadRequest extends FormRequest
                 'string',
                 'max:32',
                 'regex:/^\d{4}-\d{2}-\d{2}$/',
-                Rule::in(config('site-legal.accepted_privacy_versions', ['2026-06-01'])),
+                Rule::in(config('site-legal.accepted_privacy_versions', ['2026-06-02'])),
             ],
             'privacyConsentedAt' => ['required', 'date'],
             'website' => ['nullable', 'max:0'],
@@ -45,6 +45,7 @@ class StoreSiteLeadRequest extends FormRequest
             'privacyConsent.accepted' => 'Não foi possível processar o envio.',
             'privacyPolicyVersion.required' => 'Não foi possível processar o envio.',
             'privacyPolicyVersion.regex' => 'Não foi possível processar o envio.',
+            'privacyPolicyVersion.in' => 'Não foi possível processar o envio.',
             'privacyConsentedAt.required' => 'Não foi possível processar o envio.',
             'privacyConsentedAt.date' => 'Não foi possível processar o envio.',
             'name.required' => 'Não foi possível processar o envio.',
@@ -60,9 +61,13 @@ class StoreSiteLeadRequest extends FormRequest
 
     protected function failedValidation(Validator $validator): void
     {
-        throw new HttpResponseException(response()->json([
-            'message' => 'Não foi possível processar o envio.',
-        ], 422));
+        $body = ['message' => 'Não foi possível processar o envio.'];
+
+        if (config('app.debug')) {
+            $body['errors'] = $validator->errors();
+        }
+
+        throw new HttpResponseException(response()->json($body, 422));
     }
 
     /**

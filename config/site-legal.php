@@ -2,29 +2,26 @@
 
 /**
  * Espelho de src/app/shared/constants/site-legal.ts (site Zion Tech).
- * Ao alterar a política no Angular, atualize também este arquivo e SITE_PRIVACY_POLICY_VERSION no .env.
+ * Ao alterar a política no Angular, atualize SITE_PRIVACY_POLICY_VERSION no .env.
  */
+
+$privacyPolicyVersion = env('SITE_PRIVACY_POLICY_VERSION', '2026-06-02');
+
+$extraVersions = array_values(array_filter(array_map(
+    trim(...),
+    explode(',', (string) env('SITE_ACCEPTED_PRIVACY_VERSIONS', ''))
+)));
+
+$acceptedPrivacyVersions = array_values(array_unique(array_merge(
+    [$privacyPolicyVersion],
+    $extraVersions !== [] ? $extraVersions : ['2026-06-01', '2026-06-02'],
+)));
+
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Política de privacidade
-    |--------------------------------------------------------------------------
-    */
+    'privacy_policy_version' => $privacyPolicyVersion,
 
-    'privacy_policy_version' => env('SITE_PRIVACY_POLICY_VERSION', '2026-06-01'),
-
-    /*
-    | Versões aceitas no POST /api/site-leads (vírgula). Inclua versões antigas
-    | temporariamente se o site ainda estiver em cache após publicar nova política.
-    */
-    'accepted_privacy_versions' => array_values(array_filter(array_map(
-        trim(...),
-        explode(',', (string) env(
-            'SITE_ACCEPTED_PRIVACY_VERSIONS',
-            env('SITE_PRIVACY_POLICY_VERSION', '2026-06-01')
-        ))
-    ))),
+    'accepted_privacy_versions' => $acceptedPrivacyVersions,
 
     'legal' => [
         'controller_name' => 'Zion Tech',
@@ -36,9 +33,6 @@ return [
         'last_updated_label' => env('SITE_PRIVACY_LAST_UPDATED_LABEL', '1 de junho de 2026'),
     ],
 
-    /*
-    | Chaves usadas apenas no front (localStorage). Referência para documentação.
-    */
     'cookie_consent_storage_key' => 'zion-cookie-consent-v1',
     'chat_privacy_consent_key' => 'zion-chat-privacy-consent-v1',
 

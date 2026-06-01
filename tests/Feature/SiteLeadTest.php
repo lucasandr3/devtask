@@ -44,7 +44,7 @@ class SiteLeadTest extends TestCase
         config([
             'site-lead.api_token' => 'test-token-secret',
             'site-lead.company_id' => $this->company->id,
-            'site-legal.accepted_privacy_versions' => ['2026-06-01'],
+            'site-legal.accepted_privacy_versions' => ['2026-06-01', '2026-06-02'],
         ]);
     }
 
@@ -66,6 +66,30 @@ class SiteLeadTest extends TestCase
             'privacyPolicyVersion' => '2026-06-01',
             'privacyConsentedAt' => '2026-06-01T14:30:00.000Z',
         ], $overrides);
+    }
+
+    public function test_api_accepts_production_like_payload(): void
+    {
+        $response = $this->postJson('/api/site-leads', [
+            'name' => 'Lucas Vieira',
+            'company' => 'Zion Flow',
+            'email' => 'lucasvieiraandrade58@gmail.com',
+            'phone' => '(38) 9217-8166',
+            'segment' => 'other',
+            'message' => 'etste',
+            'source' => 'zion_tech_site',
+            'privacyConsent' => true,
+            'privacyPolicyVersion' => '2026-06-02',
+            'privacyConsentedAt' => '2026-06-01T17:45:10.892Z',
+        ], [
+            'Authorization' => 'Bearer test-token-secret',
+        ]);
+
+        $response->assertCreated();
+        $this->assertDatabaseHas('site_leads', [
+            'email' => 'lucasvieiraandrade58@gmail.com',
+            'privacy_policy_version' => '2026-06-02',
+        ]);
     }
 
     public function test_api_stores_site_lead_with_valid_token(): void
