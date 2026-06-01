@@ -9,12 +9,14 @@
         <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             @if($siteLead->isConverted() && \App\Support\CurrentCompany::canViewFinance())
                 <a href="{{ route('clientes.edit', $siteLead->client) }}" class="btn-primary btn-responsive">
+                    <x-ui.icon name="clients" class="size-5" />
                     Ver cliente
                 </a>
             @elseif(\App\Support\CurrentCompany::canManageFinance())
                 <form action="{{ route('contatos-site.convert-client', $siteLead) }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" class="btn-primary btn-responsive">
+                        <x-ui.icon name="person-add" class="size-5" />
                         Converter em cliente
                     </button>
                 </form>
@@ -24,7 +26,10 @@
                 <form action="{{ route('contatos-site.archive', $siteLead) }}" method="POST" class="inline">
                     @csrf
                     @method('PATCH')
-                    <button type="submit" class="btn-secondary btn-responsive">Arquivar</button>
+                    <button type="submit" class="btn-secondary btn-responsive">
+                        <x-ui.icon name="archive" class="size-5" />
+                        Arquivar
+                    </button>
                 </form>
             @endif
 
@@ -32,7 +37,10 @@
                   data-confirm="Excluir este contato permanentemente?" data-confirm-title="Excluir contato?">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn-danger btn-responsive">Excluir</button>
+                <button type="submit" class="btn-danger btn-responsive">
+                    <x-ui.icon name="delete" class="size-5" />
+                    Excluir
+                </button>
             </form>
         </div>
     </div>

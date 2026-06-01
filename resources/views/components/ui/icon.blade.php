@@ -25,6 +25,8 @@
         'sliders' => 'tune',
         'finance' => 'account_balance_wallet',
         'clients' => 'groups',
+        'person-add' => 'person_add',
+        'archive' => 'archive',
         'invoice' => 'receipt_long',
         'edit' => 'edit',
         'delete' => 'delete',
