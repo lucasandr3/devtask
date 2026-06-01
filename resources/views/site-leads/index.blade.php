@@ -33,39 +33,32 @@
         tableId="siteLeadsTable"
     >
         <x-slot name="head">
-            <x-data-table.header>Nome</x-data-table.header>
-            <x-data-table.header>E-mail</x-data-table.header>
-            <x-data-table.header>Empresa</x-data-table.header>
-            <x-data-table.header>Segmento</x-data-table.header>
-            <x-data-table.header>Status</x-data-table.header>
+            <x-data-table.header class="w-[40%]">Contato</x-data-table.header>
+            <x-data-table.header class="data-table-th-compact">Status</x-data-table.header>
             <x-data-table.header>Recebido em</x-data-table.header>
-            <x-data-table.header align="right">Ações</x-data-table.header>
+            <x-data-table.header align="right" class="data-table-th-actions">Ações</x-data-table.header>
         </x-slot>
 
         @forelse($leads as $lead)
             <x-data-table.row>
-                <x-data-table.cell class="font-medium text-foreground">
-                    <a href="{{ route('contatos-site.show', $lead) }}" class="hover:text-primary hover:underline">
+                <x-data-table.cell class="data-table-td-truncate max-w-0">
+                    <a href="{{ route('contatos-site.show', $lead) }}" class="font-medium text-foreground hover:text-primary hover:underline block truncate">
                         {{ $lead->name }}
                     </a>
+                    <span class="text-sm text-muted-foreground block truncate">{{ $lead->email }}</span>
                 </x-data-table.cell>
-                <x-data-table.cell>{{ $lead->email }}</x-data-table.cell>
-                <x-data-table.cell>{{ $lead->company_name ?? '-' }}</x-data-table.cell>
-                <x-data-table.cell>{{ $lead->segment ?? '-' }}</x-data-table.cell>
-                <x-data-table.cell>
+                <x-data-table.cell class="data-table-td-compact">
                     <x-status-badge :status="$lead->status->label()" :color="$lead->status->badgeColor()" />
                 </x-data-table.cell>
                 <x-data-table.cell>{{ $lead->created_at->format('d/m/Y H:i') }}</x-data-table.cell>
-                <x-data-table.cell align="right">
-                    <x-data-table.actions
-                        :viewRoute="route('contatos-site.show', $lead)"
-                        :deleteRoute="route('contatos-site.destroy', $lead)"
-                        deleteConfirm="Excluir este contato permanentemente?"
-                    />
-                </x-data-table.cell>
+                <x-data-table.actions
+                    :viewRoute="route('contatos-site.show', $lead)"
+                    :deleteRoute="route('contatos-site.destroy', $lead)"
+                    deleteConfirm="Excluir este contato permanentemente?"
+                />
             </x-data-table.row>
         @empty
-            <x-data-table.empty message="Nenhum contato recebido do site." :colspan="7" />
+            <x-data-table.empty message="Nenhum contato recebido do site." :colspan="4" />
         @endforelse
 
         @if($leads->hasPages())

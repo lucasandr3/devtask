@@ -105,6 +105,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/contatos-site', [SiteLeadController::class, 'index'])->name('contatos-site.index');
     Route::get('/contatos-site/{siteLead}', [SiteLeadController::class, 'show'])->name('contatos-site.show');
     Route::patch('/contatos-site/{siteLead}/arquivar', [SiteLeadController::class, 'archive'])->name('contatos-site.archive');
+    Route::post('/contatos-site/{siteLead}/converter-cliente', [SiteLeadController::class, 'convertToClient'])->name('contatos-site.convert-client');
     Route::delete('/contatos-site/{siteLead}', [SiteLeadController::class, 'destroy'])->name('contatos-site.destroy');
 
     // Equipe (admin)

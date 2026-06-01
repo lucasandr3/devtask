@@ -16,7 +16,7 @@ class SiteLeadController extends Controller
             ...$request->leadAttributes(),
             'company_id' => $request->attributes->get('site_lead_company_id'),
             'status' => SiteLeadStatus::NEW,
-            'ip' => $request->ip(),
+            'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),
         ]);
 

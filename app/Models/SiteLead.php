@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\SiteLeadSegment;
 use App\Enums\SiteLeadStatus;
 use App\Models\Concerns\BelongsToCompany;
 use App\Support\CurrentCompany;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SiteLead extends Model
 {
@@ -13,15 +15,20 @@ class SiteLead extends Model
 
     protected $fillable = [
         'company_id',
+        'client_id',
         'name',
         'email',
         'company_name',
         'phone',
         'segment',
         'message',
+        'source',
+        'privacy_consent',
+        'privacy_policy_version',
+        'privacy_consented_at',
         'status',
         'read_at',
-        'ip',
+        'ip_address',
         'user_agent',
     ];
 
@@ -30,7 +37,24 @@ class SiteLead extends Model
         return [
             'status' => SiteLeadStatus::class,
             'read_at' => 'datetime',
+            'privacy_consent' => 'boolean',
+            'privacy_consented_at' => 'datetime',
         ];
+    }
+
+    public function getSegmentLabelAttribute(): string
+    {
+        return SiteLeadSegment::labelFor($this->segment);
+    }
+
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function isConverted(): bool
+    {
+        return $this->client_id !== null;
     }
 
     public function markAsRead(): void
